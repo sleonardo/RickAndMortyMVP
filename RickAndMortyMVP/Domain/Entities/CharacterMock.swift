@@ -70,6 +70,10 @@ class CharacterMock {
         [rickSanchezCharacter, mortySmithCharacter, summerSmithCharacter, bethSmithCharacter, jerrySmithCharacter]
     }
     
+    static var emptyMocks: [RMCharacterModel] {
+        []
+    }
+    
     private static func createCharacter(
         id: Int,
         name: String,
