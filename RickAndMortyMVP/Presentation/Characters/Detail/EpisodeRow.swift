@@ -8,6 +8,7 @@
 import SwiftUICore
 
 struct EpisodeRow: View {
+    let episodeURL: String
     let episodeNum: Int
     
     var body: some View {
@@ -19,15 +20,27 @@ struct EpisodeRow: View {
             VStack(alignment: .leading) {
                 Text("Episode \(episodeNum)")
                     .fontWeight(.medium)
-                Text("S01E\(episodeNum)")
+                Text(episodeCode)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
             
             Spacer()
+            
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundColor(.gray)
         }
-        .padding(8)
+        .padding(12)
         .background(Color(.systemGray6))
         .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+    
+    private var episodeCode: String {
+        // Extraer código del episodio de la URL
+        if let lastComponent = episodeURL.split(separator: "/").last {
+            return "S01E\(lastComponent)"
+        }
+        return "S01E\(episodeNum)"
     }
 }

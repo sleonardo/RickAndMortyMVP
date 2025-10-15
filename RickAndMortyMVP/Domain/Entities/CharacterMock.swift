@@ -74,6 +74,7 @@ class CharacterMock {
         []
     }
     
+    // MARK: - Character Creation Methods
     private static func createCharacter(
         id: Int,
         name: String,
@@ -82,7 +83,8 @@ class CharacterMock {
         gender: String,
         origin: String,
         location: String,
-        image: String
+        image: String,
+        episode: [String] = []
     ) -> RMCharacterModel {
         let json = """
         {
@@ -101,7 +103,7 @@ class CharacterMock {
                 "url": ""
             },
             "image": "\(image)",
-            "episode": [],
+            "episode": \(episode.isEmpty ? "[]" : formatEpisodes(episode)),
             "url": "",
             "created": "2017-11-04T18:48:46.250Z"
         }
@@ -110,6 +112,80 @@ class CharacterMock {
         let data = json.data(using: .utf8)!
         let decoder = JSONDecoder()
         return try! decoder.decode(RMCharacterModel.self, from: data)
+    }
+    
+    // MARK: - Special Mock Characters
+    
+    static func createCharacterWithManyEpisodes() -> RMCharacterModel {
+        let episodes = (1...15).map { "https://rickandmortyapi.com/api/episode/\($0)" }
+        
+        return createCharacter(
+            id: 999,
+            name: "Rick with Many Episodes",
+            status: "Alive",
+            species: "Human",
+            gender: "Male",
+            origin: "Earth (C-137)",
+            location: "Earth (Replacement Dimension)",
+            image: "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+            episode: episodes
+        )
+    }
+    
+    static func createCharacterWithUnknownStatus() -> RMCharacterModel {
+        return createCharacter(
+            id: 888,
+            name: "Mystery Character",
+            status: "unknown",
+            species: "Alien",
+            gender: "unknown",
+            origin: "Unknown",
+            location: "Somewhere in Space",
+            image: "https://rickandmortyapi.com/api/character/avatar/8.jpeg",
+            episode: ["https://rickandmortyapi.com/api/episode/1"]
+        )
+    }
+    
+    static func createDeadCharacter() -> RMCharacterModel {
+        return createCharacter(
+            id: 777,
+            name: "Deceased Rick",
+            status: "Dead",
+            species: "Human",
+            gender: "Male",
+            origin: "Earth (C-137)",
+            location: "Citadel of Ricks",
+            image: "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
+            episode: [
+                "https://rickandmortyapi.com/api/episode/1",
+                "https://rickandmortyapi.com/api/episode/2",
+                "https://rickandmortyapi.com/api/episode/3"
+            ]
+        )
+    }
+    
+    static func createAlienCharacter() -> RMCharacterModel {
+        return createCharacter(
+            id: 666,
+            name: "Alien Morty",
+            status: "Alive",
+            species: "Alien",
+            gender: "Male",
+            origin: "Unknown Dimension",
+            location: "Space Station",
+            image: "https://rickandmortyapi.com/api/character/avatar/2.jpeg",
+            episode: [
+                "https://rickandmortyapi.com/api/episode/10",
+                "https://rickandmortyapi.com/api/episode/11"
+            ]
+        )
+    }
+    
+    // MARK: - Helper Methods
+    
+    private static func formatEpisodes(_ episodes: [String]) -> String {
+        let episodeStrings = episodes.map { "\"\($0)\"" }
+        return "[\(episodeStrings.joined(separator: ", "))]"
     }
 }
 
