@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		12D854732E9EC97100DD6545 /* RickMortySwiftApi in Frameworks */ = {isa = PBXBuildFile; productRef = 12D854722E9EC97100DD6545 /* RickMortySwiftApi */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		12D854432E9EB91D00DD6545 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12D854732E9EC97100DD6545 /* RickMortySwiftApi in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = RickAndMortyMVP;
 			packageProductDependencies = (
+				12D854722E9EC97100DD6545 /* RickMortySwiftApi */,
 			);
 			productName = RickAndMortyMVP;
 			productReference = 12D854352E9EB91A00DD6545 /* RickAndMortyMVP.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 12D8542C2E9EB91A00DD6545;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				12D854712E9EC97100DD6545 /* XCRemoteSwiftPackageReference "Rick-and-Morty-Swift-API" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 12D854362E9EB91A00DD6545 /* Products */;
 			projectDirPath = "";
@@ -558,6 +567,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		12D854712E9EC97100DD6545 /* XCRemoteSwiftPackageReference "Rick-and-Morty-Swift-API" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/benjaminbruch/Rick-and-Morty-Swift-API?tab=readme-ov-file";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		12D854722E9EC97100DD6545 /* RickMortySwiftApi */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 12D854712E9EC97100DD6545 /* XCRemoteSwiftPackageReference "Rick-and-Morty-Swift-API" */;
+			productName = RickMortySwiftApi;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 12D8542D2E9EB91A00DD6545 /* Project object */;
 }
