@@ -188,20 +188,3 @@ class CharacterMock {
         return "[\(episodeStrings.joined(separator: ", "))]"
     }
 }
-
-// MARK: - Extensions
-extension RMCharacterModel {
-    // Helper for determining the status color
-    var statusColor: Color {
-        switch status.lowercased() {
-        case "alive": return .green
-        case "dead": return .red
-        default: return .gray
-        }
-    }
-    
-    var uniqueID: String {
-        // Combinar ID con nombre para garantizar unicidad incluso si hay IDs duplicados
-        return "\(id)-\(name)"
-    }
-}

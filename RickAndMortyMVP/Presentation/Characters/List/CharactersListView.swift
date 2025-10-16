@@ -13,13 +13,14 @@ struct CharactersListView: View {
     @StateObject private var viewModel: CharactersViewModel
     @State private var showingFilters = false
     @State private var showingCacheInfo = false
+    @State private var searchIsActive = false
     
     init() {
         let useCases = DependencyContainer.shared.characterUseCases
         _viewModel = StateObject(wrappedValue: CharactersViewModel(useCases: useCases))
     }
     
-    // Opción 2: Inicialización para testing/previews
+    // Initialization for testing/previews
     init(viewModel: CharactersViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -27,22 +28,14 @@ struct CharactersListView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color(.systemGroupedBackground)
+                // Background
+                backgroundGradient
                     .ignoresSafeArea()
                 
-                if viewModel.isLoading && viewModel.characters.isEmpty {
-                    loadingView
-                } else if viewModel.characters.isEmpty {
-                    emptyStateView
-                } else {
-                    characterList
-                }
-                
-                if let error = viewModel.error {
-                    errorBanner(error)
-                }
+                contentView
             }
             .navigationTitle("Rick & Morty")
+            .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     cacheInfoButton
@@ -52,7 +45,10 @@ struct CharactersListView: View {
                     filterButton
                 }
             }
-            .searchable(text: $viewModel.searchText, prompt: "Search characters...")
+            .searchable(
+                text: $viewModel.searchText,
+                isPresented: $searchIsActive, prompt: "Search characters..."
+            )
             .sheet(isPresented: $showingFilters) {
                 FilterView(filters: $viewModel.filters)
             }
@@ -71,42 +67,103 @@ struct CharactersListView: View {
         }
     }
     
+    private var backgroundGradient: some View {
+        LinearGradient(
+            colors: [
+                Color(.systemGroupedBackground),
+                Color(.systemBackground).opacity(0.8)
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+    
+    @ViewBuilder
+    private var contentView: some View {
+        if viewModel.isLoading && viewModel.characters.isEmpty {
+            loadingView
+        } else if viewModel.characters.isEmpty {
+            emptyStateView
+        } else {
+            characterList
+        }
+        
+        if let error = viewModel.error {
+            errorBanner(error)
+        }
+    }
+    
     private var characterList: some View {
         ScrollView {
-            LazyVStack(spacing: 12) {
+            LazyVStack(spacing: 16) {
                 ForEach(viewModel.characters, id: \.uniqueID) { character in
                     NavigationLink {
                         CharacterDetailView(character: character)
                     } label: {
                         CharacterRow(character: character)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .onAppear {
-                        // Load more data when reaching the end
-                        if character.id == viewModel.characters.last?.id && !viewModel.isSearching {
-                            Task {
-                                await viewModel.loadCharacters()
+                            .padding(.horizontal)
+                            .onAppear {
+                                // Load more data when reaching the end
+                                if character.id == viewModel.characters.last?.id &&
+                                   !viewModel.isSearching &&
+                                   !viewModel.isLoading {
+                                    Task {
+                                        await viewModel.loadCharacters()
+                                    }
+                                }
                             }
-                        }
-                    }
+                    }.buttonStyle(PlainButtonStyle())
+                }
+                
+                if viewModel.isLoading && !viewModel.characters.isEmpty {
+                    loadingFooter
                 }
             }
-            .padding()
+            .padding(.vertical)
         }
-        .refreshable {
-            await viewModel.refresh()
-        }
+        .animation(.spring(response: 0.6, dampingFraction: 0.8),
+                   value: viewModel.characters.map { $0.id })
     }
-        
-    private var emptyStateView: some View {
+    
+    private var loadingView: some View {
         VStack(spacing: 20) {
-            Image(systemName: "person.2.slash")
-                .font(.system(size: 60))
-                .foregroundColor(.gray)
+            ProgressView()
+                .scaleEffect(1.5)
+                .tint(.blue)
             
-            Text("No characters found")
-                .font(.title2)
-                .foregroundColor(.gray)
+            VStack(spacing: 8) {
+                Text("Loading Characters")
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                
+                Text("Exploring the multiverse...")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
+    private var emptyStateView: some View {
+        VStack(spacing: 25) {
+            Image(systemName: "person.2.slash")
+                .font(.system(size: 70))
+                .foregroundColor(.gray.opacity(0.5))
+                .symbolEffect(.bounce, options: .repeating, value: viewModel.isLoading)
+            
+            VStack(spacing: 12) {
+                Text("No characters found")
+                    .font(.title2)
+                    .fontWeight(.medium)
+                    .foregroundColor(.primary)
+                
+                Text(viewModel.searchText.isEmpty ?
+                     "Try searching for different characters" :
+                     "No results for \"\(viewModel.searchText)\"")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
             
             if viewModel.searchText.isEmpty && !viewModel.hasActiveFilters {
                 Button("Load Characters") {
@@ -114,7 +171,7 @@ struct CharactersListView: View {
                         await viewModel.refresh()
                     }
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.borderedProminent)
             } else {
                 Button("Clear Search & Filters") {
                     Task {
@@ -124,27 +181,47 @@ struct CharactersListView: View {
                 .buttonStyle(.bordered)
             }
         }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-        
-    private var loadingView: some View {
-        VStack(spacing: 20) {
+    
+    private var loadingFooter: some View {
+        HStack {
+            Spacer()
             ProgressView()
-                .scaleEffect(1.5)
-                .tint(.blue)
-            
-            Text("Loading characters...")
-                .font(.headline)
+                .scaleEffect(1.2)
+            Text("Loading more...")
+                .font(.caption)
                 .foregroundColor(.secondary)
+            Spacer()
         }
+        .padding()
+        .background(Color(.systemBackground))
+        .clipShape(Capsule())
+        .padding(.horizontal)
+        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
     
     private func errorBanner(_ error: String) -> some View {
         VStack {
-            HStack {
-                Image(systemName: "exclamationmark.triangle")
-                Text(error)
-                    .font(.caption)
+            HStack(spacing: 12) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundColor(.orange)
+                    .font(.title3)
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Something went wrong")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .lineLimit(2)
+                }
+                
                 Spacer()
+                
                 Button("Retry") {
                     Task {
                         await viewModel.refresh()
@@ -156,21 +233,27 @@ struct CharactersListView: View {
             .padding()
             .background(Color.orange.opacity(0.1))
             .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.orange, lineWidth: 1)
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color.orange.opacity(0.3), lineWidth: 1)
             )
             .padding(.horizontal)
+            .shadow(color: .orange.opacity(0.1), radius: 5, x: 0, y: 2)
             
             Spacer()
         }
+        .transition(.move(edge: .top).combined(with: .opacity))
     }
     
     private var filterButton: some View {
         Button {
-            showingFilters = true
+            withAnimation(.spring()) {
+                showingFilters = true
+            }
         } label: {
             Image(systemName: "line.3.horizontal.decrease.circle")
-                .symbolRenderingMode(.multicolor)
+                .symbolVariant(viewModel.hasActiveFilters ? .fill : .none)
+                .foregroundColor(viewModel.hasActiveFilters ? .blue : .primary)
+                .scaleEffect(1.1)
         }
     }
     
@@ -180,84 +263,17 @@ struct CharactersListView: View {
         } label: {
             Image(systemName: "internaldrive")
                 .foregroundColor(.blue)
+                .overlay(
+                    Group {
+                        if !viewModel.cacheStats.keys.isEmpty {
+                            Circle()
+                                .fill(Color.red)
+                                .frame(width: 8, height: 8)
+                                .offset(x: 6, y: -6)
+                        }
+                    }
+                )
         }
-    }
-}
-
-// MARK: - Cache Info View
-struct CacheInfoView: View {
-    @ObservedObject var viewModel: CharactersViewModel
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        NavigationView {
-            List {
-                Section("Cache Statistics") {
-                    HStack {
-                        Text("Cached Items")
-                        Spacer()
-                        Text("\(viewModel.cacheStats.keys.count)")
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    HStack {
-                        Text("Cache Size")
-                        Spacer()
-                        Text(formatBytes(viewModel.cacheStats.size))
-                            .foregroundColor(.secondary)
-                    }
-                }
-                
-                Section("Cached Keys") {
-                    if viewModel.cacheStats.keys.isEmpty {
-                        Text("No cached items")
-                            .foregroundColor(.secondary)
-                    } else {
-                        ForEach(viewModel.cacheStats.keys.prefix(10), id: \.self) { key in
-                            Text(key)
-                                .font(.caption)
-                        }
-                        
-                        if viewModel.cacheStats.keys.count > 10 {
-                            Text("... and \(viewModel.cacheStats.keys.count - 10) more")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
-                
-                Section {
-                    Button("Clear Cache", role: .destructive) {
-                        Task {
-                            await viewModel.clearCache()
-                            dismiss()
-                        }
-                    }
-                    
-                    Button("Refresh Stats") {
-                        Task {
-                            await viewModel.loadCacheStats()
-                        }
-                    }
-                }
-            }
-            .navigationTitle("Cache Information")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-    
-    private func formatBytes(_ bytes: Int64) -> String {
-        let formatter = ByteCountFormatter()
-        formatter.allowedUnits = [.useKB, .useMB]
-        formatter.countStyle = .file
-        return formatter.string(fromByteCount: bytes)
     }
 }
 

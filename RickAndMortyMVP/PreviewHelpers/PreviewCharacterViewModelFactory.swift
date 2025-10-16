@@ -45,7 +45,7 @@ enum PreviewViewModelFactory {
         let useCases = CharacterUseCases(repository: repository)
         let viewModel = CharactersViewModel(useCases: useCases)
         
-        // Configurar estado de búsqueda
+        // Configure search status
         viewModel.searchText = searchText
         return viewModel
     }
@@ -56,7 +56,7 @@ enum PreviewViewModelFactory {
         let useCases = CharacterUseCases(repository: repository)
         let viewModel = CharactersViewModel(useCases: useCases)
         
-        // Configurar filtros
+        // Configure filters
         viewModel.filters.status = status
         viewModel.filters.gender = gender
         return viewModel

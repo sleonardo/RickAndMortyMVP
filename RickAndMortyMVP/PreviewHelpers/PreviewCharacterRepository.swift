@@ -38,7 +38,7 @@ class PreviewCharacterRepository: CharacterRepositoryProtocol {
             throw PreviewError.networkError
         }
         
-        // Simular paginación simple
+        // Simulate simple pagination
         let pageSize = 5
         let startIndex = (page - 1) * pageSize
         let endIndex = min(startIndex + pageSize, characters.count)
@@ -78,9 +78,7 @@ class PreviewCharacterRepository: CharacterRepositoryProtocol {
         }
     }
     
-    func clearCache() async {
-        // No-op para previews
-    }
+    func clearCache() async { }
     
     func getCacheStats() async -> (keys: [String], size: Int64) {
         return (["preview_data"], 1024)
@@ -102,7 +100,7 @@ class EmptyCharacterRepository: PreviewCharacterRepository {
 
 class LoadingCharacterRepository: PreviewCharacterRepository {
     init() {
-        super.init(characters: [], shouldThrowError: false, delay: 10.0) // 10 segundos de delay
+        super.init(characters: [], shouldThrowError: false, delay: 10.0) // 10 seconds
     }
 }
 

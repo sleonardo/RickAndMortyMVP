@@ -5,9 +5,9 @@
 //  Created by Leonardo Simoza on 15/10/25.
 //
 
-import Foundation
 import RickMortySwiftApi
 import Combine
+import SwiftUICore
 
 @MainActor
 class CharactersViewModel: ObservableObject {
@@ -62,7 +62,9 @@ class CharactersViewModel: ObservableObject {
                 if dataCharacters.isEmpty {
                     hasReachedEnd = true
                 } else {
-                    characters.append(contentsOf: dataCharacters)
+                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                        characters.append(contentsOf: dataCharacters)
+                    }
                     currentPage += 1
                 }
             }
