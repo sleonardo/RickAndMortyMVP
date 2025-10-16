@@ -189,8 +189,9 @@ class CharacterMock {
     }
 }
 
-// Helper for determining the status color
+// MARK: - Extensions
 extension RMCharacterModel {
+    // Helper for determining the status color
     var statusColor: Color {
         switch status.lowercased() {
         case "alive": return .green
@@ -198,10 +199,9 @@ extension RMCharacterModel {
         default: return .gray
         }
     }
-}
-
-struct Filters {
-    var status: Status?
-    var gender: Gender?
-    var species: String = ""
+    
+    var uniqueID: String {
+        // Combinar ID con nombre para garantizar unicidad incluso si hay IDs duplicados
+        return "\(id)-\(name)"
+    }
 }

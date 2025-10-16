@@ -18,21 +18,28 @@ class CharactersViewModel: ObservableObject {
     @Published var searchText = ""
     @Published var filters = Filters()
     @Published var hasReachedEnd = false
+    @Published var cacheStats: (keys: [String], size: Int64) = ([], 0)
+
+    // MARK: - Public Properties
+    var isSearching = false
     
     // MARK: - Private Properties
-    private let rmClient: RMClient
+    private let useCases: CharacterUseCases
     private var currentPage = 1
     private var searchTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
-    private var isSearching = false
     
     // MARK: - Initializer
-    init(rmClient: RMClient = RMClient()) {
-        self.rmClient = rmClient
+    init(useCases: CharacterUseCases) {
+        self.useCases = useCases
         setupSearchDebouncing()
     }
-    
+        
     // MARK: - Public Methods
+    func onAppear() async {
+        await loadCacheStats()
+    }
+    
     func loadCharacters() async {
         guard !isLoading, !hasReachedEnd else { return }
         
@@ -44,24 +51,27 @@ class CharactersViewModel: ObservableObject {
             
             if isSearching || hasActiveFilters {
                 // Use search with page 1 to simplify
-                dataCharacters = try await loadAndFilterPage(page: currentPage)
-            } else {
-                // Paginated normal load
-                dataCharacters = try await rmClient.character().getCharactersByPageNumber(pageNumber: currentPage)
-            }
-            
-            if dataCharacters.isEmpty {
+                dataCharacters = try await useCases.getAllCharacters()
+                let filteredCharacters = applyFiltersToCharacters(dataCharacters)
+                characters = filteredCharacters
                 hasReachedEnd = true
             } else {
-                characters.append(contentsOf: dataCharacters)
-                currentPage += 1
+                // Paginated normal load
+                dataCharacters = try await useCases.getCharacters(page: currentPage)
+                
+                if dataCharacters.isEmpty {
+                    hasReachedEnd = true
+                } else {
+                    characters.append(contentsOf: dataCharacters)
+                    currentPage += 1
+                }
             }
         } catch {
             self.error = error.localizedDescription
-            //await loadMockData()
         }
         
         isLoading = false
+        await loadCacheStats()
     }
     
     func searchCharacters() async {
@@ -72,13 +82,10 @@ class CharactersViewModel: ObservableObject {
         
         isLoading = true
         error = nil
-        characters.removeAll()
-        currentPage = 1
-        hasReachedEnd = false
         isSearching = true
         
         do {
-            let results = try await loadAndFilterPage(page: currentPage)
+            let results = try await useCases.searchCharacters(name: searchText, filters: filters)
             characters = results
             hasReachedEnd = true
         } catch {
@@ -87,18 +94,17 @@ class CharactersViewModel: ObservableObject {
         }
         
         isLoading = false
+        await loadCacheStats()
     }
     
     func applyFilters() async {
         isLoading = true
         error = nil
-        characters.removeAll()
-        currentPage = 1
-        hasReachedEnd = false
         isSearching = true
         
         do {
-            let results = try await loadAndFilterPage(page: currentPage)
+            let allCharacters = try await useCases.getAllCharacters()
+            let results = applyFiltersToCharacters(allCharacters)
             characters = results
             hasReachedEnd = true
         } catch {
@@ -106,6 +112,7 @@ class CharactersViewModel: ObservableObject {
         }
         
         isLoading = false
+        await loadCacheStats()
     }
     
     func refresh() async {
@@ -119,12 +126,18 @@ class CharactersViewModel: ObservableObject {
     func clearSearchAndFilters() async {
         searchText = ""
         filters = Filters()
-        isSearching = false
-        await resetToInitialState()
+        await resetToNormalState()
+    }
+    
+    // MARK: - Cache Management
+    func clearCache() async {
+        await useCases.clearCache()
+        await loadCacheStats()
+        await refresh() // Reload data
     }
     
     // MARK: - Computed Properties
-    private var hasActiveFilters: Bool {
+    var hasActiveFilters: Bool {
         filters.status != nil || filters.gender != nil || !filters.species.isEmpty
     }
     
@@ -175,44 +188,45 @@ class CharactersViewModel: ObservableObject {
         await loadCharacters()
     }
     
+    private func resetToNormalState() async {
+        isSearching = false
+        characters.removeAll()
+        currentPage = 1
+        hasReachedEnd = false
+        await loadCharacters()
+    }
+    
     private func loadMockData() async {
-        // Fallback a data mock
         characters = CharacterMock.charactersMocks
     }
     
-    // MARK: - Search and Filter Implementation
-    private func loadAndFilterPage(page: Int) async throws -> [RMCharacterModel] {
-        let pageCharacters = try await rmClient.character().getCharactersByPageNumber(pageNumber: page)
-        return applyFiltersToCharacters(pageCharacters)
+    func loadCacheStats() async {
+        cacheStats = await useCases.getCacheStats()
     }
     
     private func applyFiltersToCharacters(_ characters: [RMCharacterModel]) -> [RMCharacterModel] {
-            return characters.filter { character in
-                // Filter by name
-                let matchesSearch = searchText.isEmpty ||
-                    character.name.localizedCaseInsensitiveContains(searchText)
-                
-                // Filter by status
-                let matchesStatus: Bool
-                if let statusFilter = filters.status {
-                    matchesStatus = character.status.lowercased() == statusFilter.rawValue.lowercased()
-                } else {
-                    matchesStatus = true
-                }
-                
-                // Filter by species
-                let matchesSpecies = filters.species.isEmpty ||
-                    character.species.localizedCaseInsensitiveContains(filters.species)
-                
-                // Filter by gender
-                let matchesGender: Bool
-                if let genderFilter = filters.gender {
-                    matchesGender = character.gender.lowercased() == genderFilter.rawValue.lowercased()
-                } else {
-                    matchesGender = true
-                }
-                
-                return matchesSearch && matchesStatus && matchesSpecies && matchesGender
+        return characters.filter { character in
+            let matchesSearch = searchText.isEmpty ||
+                character.name.localizedCaseInsensitiveContains(searchText)
+            
+            let matchesStatus: Bool
+            if let statusFilter = filters.status {
+                matchesStatus = character.status.lowercased() == statusFilter.rawValue.lowercased()
+            } else {
+                matchesStatus = true
             }
+            
+            let matchesSpecies = filters.species.isEmpty ||
+                character.species.localizedCaseInsensitiveContains(filters.species)
+            
+            let matchesGender: Bool
+            if let genderFilter = filters.gender {
+                matchesGender = character.gender.lowercased() == genderFilter.rawValue.lowercased()
+            } else {
+                matchesGender = true
+            }
+            
+            return matchesSearch && matchesStatus && matchesSpecies && matchesGender
         }
+    }
 }

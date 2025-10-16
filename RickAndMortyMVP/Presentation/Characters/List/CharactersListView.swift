@@ -10,14 +10,18 @@ import RickMortySwiftApi
 
 struct CharactersListView: View {
     // MARK: - State Properties
-    @StateObject private var viewModel = CharactersViewModel()
+    @StateObject private var viewModel: CharactersViewModel
     @State private var showingFilters = false
+    @State private var showingCacheInfo = false
     
-    // Previews - Allow data injection
-    internal var previewCharacters: [RMCharacterModel]?
+    init() {
+        let useCases = DependencyContainer.shared.characterUseCases
+        _viewModel = StateObject(wrappedValue: CharactersViewModel(useCases: useCases))
+    }
     
-    var displayCharacters: [RMCharacterModel] {
-        previewCharacters ?? viewModel.characters
+    // Opción 2: Inicialización para testing/previews
+    init(viewModel: CharactersViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
@@ -33,9 +37,17 @@ struct CharactersListView: View {
                 } else {
                     characterList
                 }
+                
+                if let error = viewModel.error {
+                    errorBanner(error)
+                }
             }
             .navigationTitle("Rick & Morty")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    cacheInfoButton
+                }
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     filterButton
                 }
@@ -44,10 +56,17 @@ struct CharactersListView: View {
             .sheet(isPresented: $showingFilters) {
                 FilterView(filters: $viewModel.filters)
             }
+            .sheet(isPresented: $showingCacheInfo) {
+                CacheInfoView(viewModel: viewModel)
+            }
             .task {
                 if viewModel.characters.isEmpty {
                     await viewModel.loadCharacters()
                 }
+                await viewModel.onAppear()
+            }
+            .refreshable {
+                await viewModel.refresh()
             }
         }
     }
@@ -55,13 +74,21 @@ struct CharactersListView: View {
     private var characterList: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(displayCharacters) { character in
+                ForEach(viewModel.characters, id: \.uniqueID) { character in
                     NavigationLink {
                         CharacterDetailView(character: character)
                     } label: {
                         CharacterRow(character: character)
                     }
                     .buttonStyle(PlainButtonStyle())
+                    .onAppear {
+                        // Load more data when reaching the end
+                        if character.id == viewModel.characters.last?.id && !viewModel.isSearching {
+                            Task {
+                                await viewModel.loadCharacters()
+                            }
+                        }
+                    }
                 }
             }
             .padding()
@@ -81,17 +108,17 @@ struct CharactersListView: View {
                 .font(.title2)
                 .foregroundColor(.gray)
             
-            if !viewModel.searchText.isEmpty || viewModel.filters.status != nil || viewModel.filters.gender != nil || !viewModel.filters.species.isEmpty {
-                Button("Clear Search & Filters") {
+            if viewModel.searchText.isEmpty && !viewModel.hasActiveFilters {
+                Button("Load Characters") {
                     Task {
-                        await viewModel.clearSearchAndFilters()
+                        await viewModel.refresh()
                     }
                 }
                 .buttonStyle(.bordered)
             } else {
-                Button("Retry") {
+                Button("Clear Search & Filters") {
                     Task {
-                        await viewModel.refresh()
+                        await viewModel.clearSearchAndFilters()
                     }
                 }
                 .buttonStyle(.bordered)
@@ -111,6 +138,33 @@ struct CharactersListView: View {
         }
     }
     
+    private func errorBanner(_ error: String) -> some View {
+        VStack {
+            HStack {
+                Image(systemName: "exclamationmark.triangle")
+                Text(error)
+                    .font(.caption)
+                Spacer()
+                Button("Retry") {
+                    Task {
+                        await viewModel.refresh()
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+            }
+            .padding()
+            .background(Color.orange.opacity(0.1))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.orange, lineWidth: 1)
+            )
+            .padding(.horizontal)
+            
+            Spacer()
+        }
+    }
+    
     private var filterButton: some View {
         Button {
             showingFilters = true
@@ -119,20 +173,121 @@ struct CharactersListView: View {
                 .symbolRenderingMode(.multicolor)
         }
     }
+    
+    private var cacheInfoButton: some View {
+        Button {
+            showingCacheInfo = true
+        } label: {
+            Image(systemName: "internaldrive")
+                .foregroundColor(.blue)
+        }
+    }
+}
+
+// MARK: - Cache Info View
+struct CacheInfoView: View {
+    @ObservedObject var viewModel: CharactersViewModel
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationView {
+            List {
+                Section("Cache Statistics") {
+                    HStack {
+                        Text("Cached Items")
+                        Spacer()
+                        Text("\(viewModel.cacheStats.keys.count)")
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    HStack {
+                        Text("Cache Size")
+                        Spacer()
+                        Text(formatBytes(viewModel.cacheStats.size))
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
+                Section("Cached Keys") {
+                    if viewModel.cacheStats.keys.isEmpty {
+                        Text("No cached items")
+                            .foregroundColor(.secondary)
+                    } else {
+                        ForEach(viewModel.cacheStats.keys.prefix(10), id: \.self) { key in
+                            Text(key)
+                                .font(.caption)
+                        }
+                        
+                        if viewModel.cacheStats.keys.count > 10 {
+                            Text("... and \(viewModel.cacheStats.keys.count - 10) more")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+                
+                Section {
+                    Button("Clear Cache", role: .destructive) {
+                        Task {
+                            await viewModel.clearCache()
+                            dismiss()
+                        }
+                    }
+                    
+                    Button("Refresh Stats") {
+                        Task {
+                            await viewModel.loadCacheStats()
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Cache Information")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+    
+    private func formatBytes(_ bytes: Int64) -> String {
+        let formatter = ByteCountFormatter()
+        formatter.allowedUnits = [.useKB, .useMB]
+        formatter.countStyle = .file
+        return formatter.string(fromByteCount: bytes)
+    }
 }
 
 // MARK: - Previews by status
-#Preview("Content State") {
-    CharactersListView(previewCharacters: CharacterMock.charactersMocks)
+#Preview("Normal State") {
+    let viewModel = PreviewViewModelFactory.createNormalState()
+    return CharactersListView(viewModel: viewModel)
 }
 
 #Preview("Empty State") {
-    CharactersListView(previewCharacters: CharacterMock.emptyMocks)
+    let viewModel = PreviewViewModelFactory.createEmptyState()
+    return CharactersListView(viewModel: viewModel)
 }
 
 #Preview("Loading State") {
-    CharactersListView()
-        .onAppear {
-            // Keep loading status
-        }
+    let viewModel = PreviewViewModelFactory.createLoadingState()
+    return CharactersListView(viewModel: viewModel)
+}
+
+#Preview("Error State") {
+    let viewModel = PreviewViewModelFactory.createErrorState()
+    return CharactersListView(viewModel: viewModel)
+}
+
+#Preview("Search State") {
+    let viewModel = PreviewViewModelFactory.createSearchState()
+    return CharactersListView(viewModel: viewModel)
+}
+
+#Preview("Filter State") {
+    let viewModel = PreviewViewModelFactory.createFilterState()
+    return CharactersListView(viewModel: viewModel)
 }
