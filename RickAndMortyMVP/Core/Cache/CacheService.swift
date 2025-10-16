@@ -22,7 +22,7 @@ actor CacheService: CacheServiceProtocol {
         static let memoryCacheLimit = 100
         static let memoryCacheSizeLimit = 50 * 1024 * 1024 // 50MB
         static let defaultExpiry: CacheExpiry = .hours(24)
-        static let charactersKey = "cached_characters"
+        static let charactersKey = StringKeys.CacheService.cachedCharacters
     }
     
     // MARK: - Initialization
@@ -33,7 +33,7 @@ actor CacheService: CacheServiceProtocol {
         
         // Setup cache directory
         let directories = fileManager.urls(for: .cachesDirectory, in: .userDomainMask)
-        cacheDirectory = directories[0].appendingPathComponent("RickAndMortyCache")
+        cacheDirectory = directories[0].appendingPathComponent(StringKeys.CacheService.cacheDirectory)
         
         // Create cache directory if it doesn't exist
         try? fileManager.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
@@ -108,8 +108,6 @@ actor CacheService: CacheServiceProtocol {
     }
     
     func clearExpired() {
-        // Clear expired from memory cache (handled automatically on access)
-        
         // Clear expired from disk cache
         guard let files = try? fileManager.contentsOfDirectory(at: cacheDirectory, includingPropertiesForKeys: nil) else {
             return
@@ -163,11 +161,11 @@ actor CacheService: CacheServiceProtocol {
     }
     
     func getCharacter(id: Int) -> RMCharacterModel? {
-        return get(key: "character_\(id)")
+        return get(key: StringKeys.CacheService.characterforKey(id))
     }
     
     func setCharacter(_ character: RMCharacterModel) {
-        set(character, forKey: "character_\(character.id)", expiry: .days(1))
+        set(character, forKey:  StringKeys.CacheService.characterforKey(character.id), expiry: .days(1))
     }
     
     // MARK: - Private Methods

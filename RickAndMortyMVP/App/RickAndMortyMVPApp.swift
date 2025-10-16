@@ -6,12 +6,18 @@
 //
 
 import SwiftUI
+import RickMortySwiftApi
 
 @main
 struct RickAndMortyMVPApp: App {
     var body: some Scene {
         WindowGroup {
-            CharactersListView()
+            CharactersListView(
+                characterRepository: CharacterRepository(
+                    rmClient: RMClient(),
+                    cacheService: CacheService()
+                )
+            )
         }
     }
 }

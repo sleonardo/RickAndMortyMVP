@@ -12,6 +12,7 @@ import SwiftUI
 struct CacheInfoView: View {
     @ObservedObject var viewModel: CharactersViewModel
     @Environment(\.dismiss) private var dismiss
+    @State private var isLoading = false
     
     var body: some View {
         NavigationView {
@@ -36,10 +37,12 @@ struct CacheInfoView: View {
                     if viewModel.cacheStats.keys.isEmpty {
                         Text("No cached items")
                             .foregroundColor(.secondary)
+                            .italic()
                     } else {
                         ForEach(viewModel.cacheStats.keys.prefix(10), id: \.self) { key in
                             Text(key)
                                 .font(.caption)
+                                .lineLimit(1)
                         }
                         
                         if viewModel.cacheStats.keys.count > 10 {
@@ -53,14 +56,32 @@ struct CacheInfoView: View {
                 Section {
                     Button("Clear Cache", role: .destructive) {
                         Task {
+                            isLoading = true
                             await viewModel.clearCache()
-                            dismiss()
+                            isLoading = false
                         }
                     }
+                    .disabled(isLoading)
                     
                     Button("Refresh Stats") {
                         Task {
+                            isLoading = true
                             await viewModel.loadCacheStats()
+                            isLoading = false
+                        }
+                    }
+                    .disabled(isLoading)
+                }
+                
+                if isLoading {
+                    Section {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                                .scaleEffect(0.8)
+                            Text("Updating...")
+                                .foregroundColor(.secondary)
+                            Spacer()
                         }
                     }
                 }
@@ -74,12 +95,18 @@ struct CacheInfoView: View {
                     }
                 }
             }
+            .task {
+                await viewModel.loadCacheStats()
+            }
+            .refreshable {
+                await viewModel.loadCacheStats()
+            }
         }
     }
     
     private func formatBytes(_ bytes: Int64) -> String {
         let formatter = ByteCountFormatter()
-        formatter.allowedUnits = [.useKB, .useMB]
+        formatter.allowedUnits = [.useKB, .useMB, .useGB]
         formatter.countStyle = .file
         return formatter.string(fromByteCount: bytes)
     }

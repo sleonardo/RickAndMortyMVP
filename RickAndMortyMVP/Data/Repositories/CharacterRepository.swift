@@ -5,7 +5,6 @@
 //  Created by Leonardo Simoza on 15/10/25.
 //
 
-// Data/Repositories/CharacterRepository.swift
 import Foundation
 import RickMortySwiftApi
 
@@ -37,7 +36,7 @@ class CharacterRepository: CharacterRepositoryProtocol {
     }
     
     func getCharacters(page: Int) async throws -> [RMCharacterModel] {
-        let cacheKey = "characters_page_\(page)"
+        let cacheKey = StringKeys.CharacterRepository.charactersPage(page)
         
         // Try cache first
         if let cached: [RMCharacterModel] = await cacheService.get(key: cacheKey) {

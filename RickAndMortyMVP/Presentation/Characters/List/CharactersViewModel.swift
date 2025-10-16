@@ -6,229 +6,218 @@
 //
 
 import RickMortySwiftApi
-import Combine
 import SwiftUICore
 
 @MainActor
 class CharactersViewModel: ObservableObject {
-    // MARK: - Published Properties
     @Published var characters: [RMCharacterModel] = []
     @Published var isLoading = false
-    @Published var error: String?
-    @Published var searchText = ""
-    @Published var filters = Filters()
-    @Published var hasReachedEnd = false
-    @Published var cacheStats: (keys: [String], size: Int64) = ([], 0)
-
-    // MARK: - Public Properties
-    var isSearching = false
+    @Published var isSearching = false
+    @Published var showError = false
+    @Published var errorMessage: String?
+    @Published var hasMorePages = true
+    @Published var cacheStats: CacheStats = CacheStats(keys: [], size: 0)
     
-    // MARK: - Private Properties
+    // Properties for search and filters
+    @Published var searchText: String = ""
+    @Published var filters = CharacterFilters()
+    
     private let useCases: CharacterUseCases
     private var currentPage = 1
     private var searchTask: Task<Void, Never>?
-    private var cancellables = Set<AnyCancellable>()
     
-    // MARK: - Initializer
+    // MARK: - Initialization
+    init(characterRepository: CharacterRepositoryProtocol) {
+        self.useCases = CharacterUseCases(repository: characterRepository)
+    }
+    
+    // For previews with use cases
     init(useCases: CharacterUseCases) {
         self.useCases = useCases
-        setupSearchDebouncing()
-    }
-        
-    // MARK: - Public Methods
-    func onAppear() async {
-        await loadCacheStats()
     }
     
+    // MARK: - Public Methods
+    
+    // Load initial characters
     func loadCharacters() async {
-        guard !isLoading, !hasReachedEnd else { return }
+        guard !isLoading, hasMorePages else { return }
         
         isLoading = true
-        error = nil
+        showError = false
         
         do {
-            let dataCharacters: [RMCharacterModel]
+            let newCharacters = try await useCases.getCharacters(page: currentPage)
             
-            if isSearching || hasActiveFilters {
-                // Use search with page 1 to simplify
-                dataCharacters = try await useCases.getAllCharacters()
-                let filteredCharacters = applyFiltersToCharacters(dataCharacters)
-                characters = filteredCharacters
-                hasReachedEnd = true
+            if newCharacters.isEmpty {
+                hasMorePages = false
             } else {
-                // Paginated normal load
-                dataCharacters = try await useCases.getCharacters(page: currentPage)
-                
-                if dataCharacters.isEmpty {
-                    hasReachedEnd = true
-                } else {
-                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                        characters.append(contentsOf: dataCharacters)
-                    }
-                    currentPage += 1
-                }
+                characters.append(contentsOf: newCharacters)
+                currentPage += 1
             }
+            
         } catch {
-            self.error = error.localizedDescription
+            handleError(error)
         }
         
         isLoading = false
-        await loadCacheStats()
     }
     
-    func searchCharacters() async {
-        guard !searchText.isEmpty else {
-            await resetToInitialState()
+    // Search characters by name
+    func searchCharacters(with name: String) async {
+        guard !name.isEmpty else {
+            await resetSearch()
             return
         }
         
-        isLoading = true
-        error = nil
-        isSearching = true
+        searchTask?.cancel()
         
-        do {
-            let results = try await useCases.searchCharacters(name: searchText, filters: filters)
-            characters = results
-            hasReachedEnd = true
-        } catch {
-            self.error = error.localizedDescription
-            characters.removeAll()
+        searchTask = Task {
+            isSearching = true
+            isLoading = true
+            showError = false
+            
+            try? await Task.sleep(nanoseconds: 300_000_000)
+            guard !Task.isCancelled else { return }
+            
+            do {
+                let searchResults = try await useCases.searchCharacters(
+                    name: name,
+                    status: filters.status,
+                    gender: filters.gender
+                )
+                characters = searchResults
+                hasMorePages = false
+            } catch {
+                if let useCaseError = error as? UseCaseError,
+                   useCaseError == .notFound {
+                    characters = []
+                } else {
+                    handleError(error)
+                }
+            }
+            
+            isLoading = false
         }
-        
-        isLoading = false
-        await loadCacheStats()
     }
     
-    func applyFilters() async {
-        isLoading = true
-        error = nil
-        isSearching = true
-        
-        do {
-            let allCharacters = try await useCases.getAllCharacters()
-            let results = applyFiltersToCharacters(allCharacters)
-            characters = results
-            hasReachedEnd = true
-        } catch {
-            self.error = error.localizedDescription
-        }
-        
-        isLoading = false
-        await loadCacheStats()
+    // Reset search and load initial characters
+    func resetSearch() async {
+        searchTask?.cancel()
+        characters.removeAll()
+        currentPage = 1
+        hasMorePages = true
+        isSearching = false
+        searchText = ""
+        filters = CharacterFilters()
+        await loadCharacters()
     }
     
+    // Refresh all data
     func refresh() async {
         characters.removeAll()
         currentPage = 1
-        hasReachedEnd = false
+        hasMorePages = true
         isSearching = false
+        searchText = ""
         await loadCharacters()
     }
     
-    func clearSearchAndFilters() async {
-        searchText = ""
-        filters = Filters()
-        await resetToNormalState()
+    // Load more characters for pagination
+    func loadMoreCharactersIfNeeded(currentCharacter character: RMCharacterModel) async {
+        guard !isSearching,
+              !isLoading,
+              hasMorePages,
+              let lastCharacter = characters.last,
+              character.id == lastCharacter.id else {
+            return
+        }
+        
+        await loadCharacters()
     }
     
-    // MARK: - Cache Management
+    // Apply filters
+    func applyFilters(status: Status?, gender: Gender?) {
+        filters.status = status
+        filters.gender = gender
+        
+        Task {
+            if !searchText.isEmpty {
+                await searchCharacters(with: searchText)
+            } else {
+                await refresh()
+            }
+        }
+    }
+    
+    // MARK: - Cache Methods
+    func loadCacheStats() async {
+        do {
+            let stats = try await useCases.getCacheStats()
+            await MainActor.run {
+                self.cacheStats = stats
+            }
+        } catch {
+            print("Error loading cache stats: \(error)")
+        }
+    }
+    
     func clearCache() async {
-        await useCases.clearCache()
-        await loadCacheStats()
-        await refresh() // Reload data
-    }
-    
-    // MARK: - Computed Properties
-    var hasActiveFilters: Bool {
-        filters.status != nil || filters.gender != nil || !filters.species.isEmpty
+        do {
+            try await useCases.clearCache()
+            await loadCacheStats() // Refresh stats after clearing
+        } catch {
+            print("Error clearing cache: \(error)")
+        }
     }
     
     // MARK: - Private Methods
-    private func setupSearchDebouncing() {
-        $searchText
-            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
-            .sink { [weak self] _ in
-                self?.performSearch()
-            }
-            .store(in: &cancellables)
+    
+    private func handleError(_ error: Error) {
+        showError = true
         
-        // Respond to changes in filters
-        $filters
-            .dropFirst() // Ignore initial value
-            .sink { [weak self] _ in
-                self?.performFilter()
-            }
-            .store(in: &cancellables)
-    }
-    
-    private func performSearch() {
-        searchTask?.cancel()
-        searchTask = Task {
-            if searchText.isEmpty && !hasActiveFilters {
-                await resetToInitialState()
-            } else if !searchText.isEmpty {
-                await searchCharacters()
-            }
+        if let useCaseError = error as? UseCaseError {
+            errorMessage = useCaseError.localizedDescription
+        } else if let repositoryError = error as? RepositoryError {
+            errorMessage = repositoryError.localizedDescription
+        } else {
+            errorMessage = error.localizedDescription
         }
+        
+        print("Error loading characters: \(error)")
     }
+}
+
+// MARK: - Cache Stats Model
+struct CacheStats {
+    let keys: [String]
+    let size: Int64
     
-    private func performFilter() {
-        Task {
-            if hasActiveFilters {
-                await applyFilters()
-            } else if searchText.isEmpty {
-                await resetToInitialState()
-            }
-        }
-    }
+    static let empty = CacheStats(keys: [], size: 0)
+}
+
+// MARK: - Character Filters
+struct CharacterFilters {
+    var status: Status?
+    var gender: Gender?
+}
+
+// MARK: - UseCase Error
+enum UseCaseError: Error, LocalizedError {
+    case notFound
+    case networkError
+    case invalidData
+    case cacheError
     
-    private func resetToInitialState() async {
-        characters.removeAll()
-        currentPage = 1
-        hasReachedEnd = false
-        isSearching = false
-        await loadCharacters()
-    }
-    
-    private func resetToNormalState() async {
-        isSearching = false
-        characters.removeAll()
-        currentPage = 1
-        hasReachedEnd = false
-        await loadCharacters()
-    }
-    
-    private func loadMockData() async {
-        characters = CharacterMock.charactersMocks
-    }
-    
-    func loadCacheStats() async {
-        cacheStats = await useCases.getCacheStats()
-    }
-    
-    private func applyFiltersToCharacters(_ characters: [RMCharacterModel]) -> [RMCharacterModel] {
-        return characters.filter { character in
-            let matchesSearch = searchText.isEmpty ||
-                character.name.localizedCaseInsensitiveContains(searchText)
-            
-            let matchesStatus: Bool
-            if let statusFilter = filters.status {
-                matchesStatus = character.status.lowercased() == statusFilter.rawValue.lowercased()
-            } else {
-                matchesStatus = true
-            }
-            
-            let matchesSpecies = filters.species.isEmpty ||
-                character.species.localizedCaseInsensitiveContains(filters.species)
-            
-            let matchesGender: Bool
-            if let genderFilter = filters.gender {
-                matchesGender = character.gender.lowercased() == genderFilter.rawValue.lowercased()
-            } else {
-                matchesGender = true
-            }
-            
-            return matchesSearch && matchesStatus && matchesSpecies && matchesGender
+    var errorDescription: String? {
+        switch self {
+        case .notFound:
+            return "The requested resource was not found."
+        case .networkError:
+            return "Network connection error. Please check your internet."
+        case .invalidData:
+            return "The data received is invalid."
+        case .cacheError:
+            return "Error accessing cache."
         }
     }
 }

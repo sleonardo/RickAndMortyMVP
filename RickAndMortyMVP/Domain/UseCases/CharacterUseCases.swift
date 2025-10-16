@@ -15,34 +15,28 @@ class CharacterUseCases {
         self.repository = repository
     }
     
-    // MARK: - Character Operations
-    func getAllCharacters() async throws -> [RMCharacterModel] {
-        try await repository.getAllCharacters()
-    }
-    
     func getCharacters(page: Int) async throws -> [RMCharacterModel] {
-        try await repository.getCharacters(page: page)
+        return try await repository.getCharacters(page: page)
     }
     
-    func getCharacter(id: Int) async throws -> [RMCharacterModel] {
-        let character = try await repository.getCharacter(id: id)
-        return [character]
+    func getAllCharacters() async throws -> [RMCharacterModel] {
+        return try await repository.getAllCharacters()
     }
     
-    func searchCharacters(name: String, filters: Filters) async throws -> [RMCharacterModel] {
-        try await repository.searchCharacters(
-            name: name,
-            status: filters.status,
-            gender: filters.gender
-        )
+    func getCharacter(id: Int) async throws -> RMCharacterModel {
+        return try await repository.getCharacter(id: id)
     }
     
-    // MARK: - Cache Management
-    func clearCache() async {
+    func searchCharacters(name: String, status: Status?, gender: Gender?) async throws -> [RMCharacterModel] {
+        return try await repository.searchCharacters(name: name, status: status, gender: gender)
+    }
+    
+    func getCacheStats() async throws -> CacheStats {
+        let stats = await repository.getCacheStats()
+        return CacheStats(keys: stats.keys, size: stats.size)
+    }
+    
+    func clearCache() async throws {
         await repository.clearCache()
-    }
-    
-    func getCacheStats() async -> (keys: [String], size: Int64) {
-        await repository.getCacheStats()
     }
 }

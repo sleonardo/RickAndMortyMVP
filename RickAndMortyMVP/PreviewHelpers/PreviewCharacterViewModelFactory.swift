@@ -61,4 +61,25 @@ enum PreviewViewModelFactory {
         viewModel.filters.gender = gender
         return viewModel
     }
+    
+    @MainActor
+    static func createWithCache() -> CharactersViewModel {
+        let repository = SuccessCharacterRepository()
+        let useCases = CharacterUseCases(repository: repository)
+        let viewModel = CharactersViewModel(useCases: useCases)
+        
+        // Pre-populate cache stats for preview
+        viewModel.cacheStats = CacheStats(
+            keys: [
+                "characters_page_1",
+                "characters_page_2",
+                "character_1",
+                "character_2",
+                "search_rick"
+            ],
+            size: 1024 * 1024 * 5 // 5MB
+        )
+        
+        return viewModel
+    }
 }
