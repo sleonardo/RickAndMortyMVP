@@ -28,6 +28,7 @@ struct CharactersListView: View {
     var body: some View {
         NavigationStack {
             contentView
+                .rickAndMortyGradient()
                 .navigationTitle("Rick & Morty")
                 .toolbar { toolbarContent }
                 .sheet(isPresented: $showingCacheInfo) {
@@ -46,7 +47,6 @@ struct CharactersListView: View {
     
     private var contentView: some View {
         ZStack {
-            backgroundGradient
             Group {
                 if viewModel.isLoading && viewModel.characters.isEmpty {
                     loadingView
@@ -133,7 +133,8 @@ struct CharactersListView: View {
                         Task {
                             await viewModel.searchCharacters(with: query)
                         }
-                    }
+                    },
+                    viewModel: viewModel
                 )
                 .padding(.horizontal)
                 .padding(.top, 8)

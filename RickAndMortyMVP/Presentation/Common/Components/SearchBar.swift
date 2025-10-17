@@ -11,6 +11,7 @@ import SwiftUI
 struct SearchBar: View {
     @Binding var text: String
     let onSearch: (String) -> Void
+    @ObservedObject var viewModel: CharactersViewModel
     @State private var isEditing = false
     @State private var searchTask: Task<Void, Never>?
     
@@ -18,7 +19,8 @@ struct SearchBar: View {
     
     var body: some View {
         HStack {
-            TextField("Search characters...", text: $text)
+            TextField(StringKeys.CharactersList.searchCharacters,
+                      text: $text)
                 .padding(8)
                 .padding(.horizontal, 32)
                 .background(Color(.systemGray6))
@@ -110,9 +112,15 @@ struct SearchBar: View {
     @Previewable @State var searchText = ""
     
     return VStack {
-        SearchBar(text: $searchText, onSearch: { query in
-            print("Searching for: \(query)")
-        })
+        SearchBar(
+            text: $searchText,
+            onSearch: { query in
+                print("Searching for: \(query)")
+            },
+            viewModel: CharactersViewModel(
+                useCases: CharacterUseCases(repository: MockCharacterRepository(previewData: .success))
+            )
+        )
         .padding()
         
         Text("Current text: \(searchText)")

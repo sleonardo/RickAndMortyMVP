@@ -46,13 +46,34 @@ class CharactersViewModel: ObservableObject {
         showError = false
         
         do {
-            let newCharacters = try await useCases.getCharacters(page: currentPage)
+            let newCharacters: [RMCharacterModel]
+            
+            // When filters are active, use search with filters
+            if filters.status != nil || filters.gender != nil {
+                // For filters without search text, load all and filter
+                let allCharacters = try await useCases.getAllCharacters()
+                newCharacters = allCharacters.filter { character in
+                    let matchesStatus = filters.status == nil ||
+                        character.status.lowercased() == filters.status?.rawValue.lowercased()
+                    let matchesGender = filters.gender == nil ||
+                        character.gender.lowercased() == filters.gender?.rawValue.lowercased()
+                    
+                    return matchesStatus && matchesGender
+                }
+                hasMorePages = false // Filters are not paginatedClick to apply
+            } else {
+                // Normal paginated load
+                newCharacters = try await useCases.getCharacters(page: currentPage)
+                hasMorePages = !newCharacters.isEmpty
+            }
             
             if newCharacters.isEmpty {
                 hasMorePages = false
             } else {
                 characters.append(contentsOf: newCharacters)
-                currentPage += 1
+                if filters.status == nil && filters.gender == nil {
+                    currentPage += 1
+                }
             }
             
         } catch {
@@ -80,35 +101,44 @@ class CharactersViewModel: ObservableObject {
             guard !Task.isCancelled else { return }
             
             do {
+                print("🔍 Searching for: '\(name)' with filters - Status: \(filters.status?.rawValue ?? "None"), Gender: \(filters.gender?.rawValue ?? "None")")
+                
                 let searchResults = try await useCases.searchCharacters(
                     name: name,
                     status: filters.status,
                     gender: filters.gender
                 )
-                characters = searchResults
-                hasMorePages = false
+                
+                await MainActor.run {
+                    print("✅ Search results: \(searchResults.count) characters")
+                    self.characters = searchResults
+                    self.hasMorePages = false
+                    self.isLoading = false
+                }
             } catch {
-                if let useCaseError = error as? ErrorUseCase,
-                   useCaseError == .notFound {
-                    characters = []
-                } else {
-                    handleError(error)
+                await MainActor.run {
+                    print("❌ Search error: \(error)")
+                    if let useCaseError = error as? ErrorUseCase,
+                       useCaseError == .notFound {
+                        self.characters = []
+                    } else {
+                        self.handleError(error)
+                    }
+                    self.isLoading = false
                 }
             }
-            
-            isLoading = false
         }
     }
     
     // Reset search and load initial characters
     func resetSearch() async {
+        print("🔄 Resetting search")
         searchTask?.cancel()
         characters.removeAll()
         currentPage = 1
         hasMorePages = true
         isSearching = false
         searchText = ""
-        filters = CharacterFilters()
         await loadCharacters()
     }
     
@@ -137,16 +167,32 @@ class CharactersViewModel: ObservableObject {
     
     // Apply filters
     func applyFilters(status: Status?, gender: Gender?) {
+        print("🎯 Applying filters - Status: \(status?.rawValue ?? "None"), Gender: \(gender?.rawValue ?? "None")")
+        
         filters.status = status
         filters.gender = gender
         
         Task {
             if !searchText.isEmpty {
+                // Check if there is any search text, then search again with the new filters.
+                print("🔄 Re-searching with new filters")
                 await searchCharacters(with: searchText)
             } else {
-                await refresh()
+                // Otherwise, load normally with filters
+                await refreshWithFilters()
             }
         }
+    }
+    
+    private func refreshWithFilters() async {
+        print("🔄 Refreshing with filters")
+        characters.removeAll()
+        currentPage = 1
+        hasMorePages = true
+        isSearching = false
+        searchText = ""
+        
+        await loadCharacters()
     }
     
     // MARK: - Cache Methods

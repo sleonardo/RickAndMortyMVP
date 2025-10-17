@@ -59,6 +59,16 @@
         }
       }
     },
+    "%lld characters" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld personajes"
+          }
+        }
+      }
+    },
     "•" : {
 
     },
@@ -98,7 +108,14 @@
       }
     },
     "Apply Filters" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicar filtros"
+          }
+        }
+      }
     },
     "Cache Information" : {
       "localizations" : {
@@ -157,7 +174,8 @@
             "value" : "cacheDirectory"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "Cached Items" : {
       "localizations" : {
@@ -200,27 +218,28 @@
             "value" : "cached_characters"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "Cancel" : {
-
-    },
-    "character_%lld" : {
-      "comment" : "Character ID"
-    },
-    "character_accessibility_label %@ %@ %@" : {
-      "comment" : "Accessibility label for character row. Parameters: character name, species, status",
       "localizations" : {
-        "en" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Character: %@, %@, %@"
+            "value" : "Cancelar"
           }
         }
       }
     },
+    "character_%lld" : {
+      "comment" : "Character ID"
+    },
+    "Characters list" : {
+
+    },
     "characters_page_%lld" : {
-      "comment" : "Characters Page"
+      "comment" : "Characters Page",
+      "shouldTranslate" : false
     },
     "Clear All" : {
 
@@ -262,6 +281,12 @@
           }
         }
       }
+    },
+    "Double tap to view details" : {
+
+    },
+    "End of characters list" : {
+
     },
     "Episode %lld" : {
       "localizations" : {
@@ -318,7 +343,14 @@
       "comment" : "Info title"
     },
     "Loading characters..." : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando personajes..."
+          }
+        }
+      }
     },
     "Loading image..." : {
       "localizations" : {
@@ -336,8 +368,41 @@
         }
       }
     },
+    "Loading more characters" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando más personajes"
+          }
+        }
+      }
+    },
     "Loading more characters..." : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando más personajes..."
+          }
+        }
+      }
+    },
+    "Name: %@, Gender: %@, Status: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Name: %1$@, Gender: %2$@, Status: %3$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre: %1$@, Género: %2$@, Estatus: %3$@"
+          }
+        }
+      }
     },
     "No cached items" : {
       "localizations" : {
@@ -351,6 +416,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sin elementos almacenados en caché"
+          }
+        }
+      }
+    },
+    "No characters available" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay caracteres disponibles"
+          }
+        }
+      }
+    },
+    "No more characters to load" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay más caracteres que cargar."
+          }
+        }
+      }
+    },
+    "Please wait while more characters are loading" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por favor, espere mientras se cargan más caracteres."
+          }
+        }
+      }
+    },
+    "Pull to refresh or check your internet connection" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desliza hacia abajo para actualizar o comprueba tu conexión a Internet."
           }
         }
       }
@@ -372,7 +477,14 @@
       }
     },
     "Reset Filters" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restablecer filtros"
+          }
+        }
+      }
     },
     "Retry" : {
       "localizations" : {
@@ -391,7 +503,14 @@
       }
     },
     "Retry operation" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar operación"
+          }
+        }
+      }
     },
     "Rick & Morty" : {
       "localizations" : {
@@ -409,7 +528,8 @@
         }
       }
     },
-    "Search characters..." : {
+    "search_characters" : {
+      "comment" : "Search characters...",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -419,20 +539,42 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Buscar personajes..."
           }
         }
       }
     },
     "Select Gender" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar género"
+          }
+        }
+      }
     },
     "Select Status" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar estatus"
+          }
+        }
+      }
     },
     "Server error" : {
-      "comment" : "Server error title"
+      "comment" : "Server error title",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error del servidor"
+          }
+        }
+      }
     },
     "Show All" : {
       "localizations" : {
@@ -498,6 +640,9 @@
           }
         }
       }
+    },
+    "Swipe up or down to browse characters" : {
+
     },
     "Try Again" : {
 

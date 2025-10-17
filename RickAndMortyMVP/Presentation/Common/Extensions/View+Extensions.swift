@@ -26,4 +26,15 @@ extension View {
         )
         .animation(.spring(response: 0.6, dampingFraction: 0.8), value: isPresented.wrappedValue)
     }
+    
+    func rickAndMortyGradient() -> some View {
+        self.background(
+            LinearGradient(
+                colors: [Color.white.opacity(0.6), Color.orange.opacity(0.2)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+        )
+    }
 }

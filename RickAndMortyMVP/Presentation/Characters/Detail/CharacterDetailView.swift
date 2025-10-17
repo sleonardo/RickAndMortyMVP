@@ -36,6 +36,7 @@ struct CharacterDetailView: View {
             }
             .padding(.horizontal)
         }
+        .rickAndMortyGradient()
         .navigationTitle(character.name)
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(.systemGroupedBackground))

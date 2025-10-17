@@ -47,11 +47,9 @@ enum StringKeys {
     
     // MARK: - CharactersList
     enum CharactersList {
-        static func characterAccessibilityLabel(_ character: RMCharacterModel) -> String {
-            return String(
-                localized: "character_accessibility_label \(character.name) \(character.species) \(character.status)",
-                comment: "Accessibility label for character row. Parameters: character name, species, status"
-            )
-        }
+        static let searchCharacters = String(
+            localized: "search_characters",
+            comment: "Search characters..."
+        )
     }
 }
