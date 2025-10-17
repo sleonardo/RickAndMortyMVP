@@ -6,28 +6,23 @@
 //
 
 import XCTest
-import Combine
 @testable import RickAndMortyMVP
-import RickMortySwiftApi
 
 @MainActor
 final class CharactersViewModelTests: XCTestCase {
     
-    private var viewModel: CharactersViewModel!
-    private var mockUseCases: MockCharacterUseCases!
-    private var cancellables: Set<AnyCancellable>!
+    var viewModel: CharactersViewModel!
+    var mockUseCases: MockCharacterUseCases!
     
     override func setUp() {
         super.setUp()
-        mockUseCases = MockCharacterUseCases(mockCharacters: CharacterMock.charactersMocks)
+        mockUseCases = MockCharacterUseCases()
         viewModel = CharactersViewModel(useCases: mockUseCases)
-        cancellables = []
     }
     
     override func tearDown() {
         viewModel = nil
         mockUseCases = nil
-        cancellables = nil
         super.tearDown()
     }
     
@@ -36,214 +31,240 @@ final class CharactersViewModelTests: XCTestCase {
     func testInitialState() {
         XCTAssertTrue(viewModel.characters.isEmpty)
         XCTAssertFalse(viewModel.isLoading)
-        XCTAssertNil(viewModel.error)
-        XCTAssertFalse(viewModel.hasReachedEnd)
-        XCTAssertTrue(viewModel.searchText.isEmpty)
-        XCTAssertFalse(viewModel.isSearching)
+        XCTAssertFalse(viewModel.showError)
+        XCTAssertNil(viewModel.errorMessage)
+        XCTAssertTrue(viewModel.hasMorePages)
+        XCTAssertEqual(viewModel.filters.status, nil)
+        XCTAssertEqual(viewModel.filters.gender, nil)
     }
     
     // MARK: - Load Characters Tests
     
     func testLoadCharactersSuccess() async {
         // Given
-        let expectedCharacters = CharacterMock.charactersMocks
-        mockUseCases.mockCharacters = expectedCharacters
+        mockUseCases.charactersToReturn = CharacterMock.charactersMocks
         
         // When
         await viewModel.loadCharacters()
         
         // Then
+        XCTAssertFalse(viewModel.characters.isEmpty)
+        XCTAssertEqual(viewModel.characters.count, 5)
         XCTAssertFalse(viewModel.isLoading)
-        XCTAssertNil(viewModel.error)
-        XCTAssertEqual(viewModel.characters.count, expectedCharacters.count)
-        XCTAssertEqual(viewModel.characters.first?.name, "Rick Sanchez")
+        XCTAssertFalse(viewModel.showError)
+        XCTAssertNil(viewModel.errorMessage)
     }
     
     func testLoadCharactersEmpty() async {
         // Given
-        mockUseCases.mockCharacters = []
+        mockUseCases.charactersToReturn = []
         
         // When
         await viewModel.loadCharacters()
         
         // Then
-        XCTAssertFalse(viewModel.isLoading)
-        XCTAssertTrue(viewModel.hasReachedEnd)
         XCTAssertTrue(viewModel.characters.isEmpty)
-    }
-    
-    // MARK: - Pagination Tests
-    
-    func testPaginationLoadsMoreCharacters() async {
-        // Given
-        let allCharacters = CharacterMock.charactersMocks
-        mockUseCases.mockCharacters = allCharacters
-        mockUseCases.pageSize = 2
-        
-        // When - Load first page
-        await viewModel.loadCharacters()
-        
-        // Then - First page loaded
-        XCTAssertEqual(viewModel.characters.count, 2)
-        XCTAssertFalse(viewModel.hasReachedEnd)
-        
-        // When - Load second page
-        await viewModel.loadCharacters()
-        
-        // Then - Second page appended
-        XCTAssertEqual(viewModel.characters.count, 4) // 2 + 2
-    }
-    
-    func testPaginationStopsWhenNoMoreCharacters() async {
-        // Given
-        mockUseCases.mockCharacters = []
-        mockUseCases.pageSize = 2
-        
-        // When
-        await viewModel.loadCharacters()
-        
-        // Then
-        XCTAssertTrue(viewModel.hasReachedEnd)
-        XCTAssertTrue(viewModel.characters.isEmpty)
-    }
-    
-    // MARK: - Search Tests
-    
-    func testSearchCharactersSuccess() async {
-        // Given
-        let allCharacters = CharacterMock.charactersMocks
-        mockUseCases.mockCharacters = allCharacters
-        viewModel.searchText = "Rick"
-        
-        // When
-        await viewModel.searchCharacters()
-        
-        // Then
+        XCTAssertFalse(viewModel.hasMorePages)
         XCTAssertFalse(viewModel.isLoading)
-        XCTAssertNil(viewModel.error)
-        XCTAssertTrue(viewModel.characters.allSatisfy { $0.name.contains("Rick") })
-        XCTAssertTrue(viewModel.hasReachedEnd)
     }
     
-    func testSearchCharactersEmptyResult() async {
+    func testLoadCharactersError() async {
         // Given
-        mockUseCases.mockCharacters = CharacterMock.charactersMocks
-        viewModel.searchText = "NonExistentCharacter"
+        mockUseCases.shouldThrowError = true
+        mockUseCases.errorToThrow = ErrorUseCase.networkError
         
         // When
-        await viewModel.searchCharacters()
+        await viewModel.loadCharacters()
         
         // Then
-        XCTAssertFalse(viewModel.isLoading)
         XCTAssertTrue(viewModel.characters.isEmpty)
-        XCTAssertTrue(viewModel.hasReachedEnd)
+        XCTAssertTrue(viewModel.showError)
+        XCTAssertNotNil(viewModel.errorMessage)
+        XCTAssertEqual(viewModel.errorMessage, ErrorUseCase.networkError.localizedDescription)
     }
     
-    func testSearchCharactersClearsWhenEmpty() async {
+    func testSearchCharactersEmptyQuery() async {
         // Given
-        let allCharacters = CharacterMock.charactersMocks
-        mockUseCases.mockCharacters = allCharacters
-        viewModel.searchText = "Rick"
+        let initialCharacters = CharacterMock.charactersMocks
+        mockUseCases.charactersToReturn = initialCharacters
         
-        // When - Perform search
-        await viewModel.searchCharacters()
+        // When - Load some characters first
+        await viewModel.loadCharacters()
         
-        // Then - Has search results
-        XCTAssertFalse(viewModel.characters.isEmpty)
+        // Then - Search with empty query should reset
+        await viewModel.searchCharacters(with: "")
         
-        // When - Clear search
-        viewModel.searchText = ""
-        await viewModel.searchCharacters()
+        XCTAssertEqual(viewModel.characters.count, 5)
+        XCTAssertFalse(viewModel.isSearching)
+    }
+    
+    func testSearchCharactersNotFound() async {
+        // Given
+        let searchQuery = "NonExistentCharacter"
+        mockUseCases.charactersToReturn = []
         
-        // Then - Should load normal characters
+        // When
+        await viewModel.searchCharacters(with: searchQuery)
+        
+        // Then
+        XCTAssertTrue(viewModel.characters.isEmpty)
         XCTAssertFalse(viewModel.isLoading)
     }
     
     // MARK: - Filter Tests
     
-    func testApplyFilters() async {
+    func testApplyStatusFilter() async {
         // Given
         let allCharacters = CharacterMock.charactersMocks
-        mockUseCases.mockCharacters = allCharacters
-        viewModel.filters.status = .alive
+        mockUseCases.charactersToReturn = allCharacters
         
         // When
-        await viewModel.applyFilters()
+        viewModel.applyFilters(status: .alive, gender: nil)
+        
+        // Wait for async operation
+        try? await Task.sleep(nanoseconds: 100_000_000)
         
         // Then
-        XCTAssertFalse(viewModel.isLoading)
-        XCTAssertTrue(viewModel.characters.allSatisfy { $0.status.lowercased() == "alive" })
-        XCTAssertTrue(viewModel.hasReachedEnd)
+        XCTAssertEqual(viewModel.filters.status, .alive)
+        XCTAssertNil(viewModel.filters.gender)
+        
+        // Verify only alive characters are shown
+        let aliveCharacters = viewModel.characters.filter { $0.status.lowercased() == "alive" }
+        XCTAssertEqual(viewModel.characters.count, aliveCharacters.count)
     }
     
-    func testClearSearchAndFilters() async {
+    func testApplyGenderFilter() async {
         // Given
-        viewModel.searchText = "Rick"
-        viewModel.filters.status = .alive
-        viewModel.filters.gender = .male
+        let allCharacters = CharacterMock.charactersMocks
+        mockUseCases.charactersToReturn = allCharacters
         
         // When
-        await viewModel.clearSearchAndFilters()
+        viewModel.applyFilters(status: nil, gender: .male)
+        
+        // Wait for async operation
+        try? await Task.sleep(nanoseconds: 100_000_000)
         
         // Then
-        XCTAssertTrue(viewModel.searchText.isEmpty)
+        XCTAssertNil(viewModel.filters.status)
+        XCTAssertEqual(viewModel.filters.gender, .male)
+        
+        // Verify only male characters are shown
+        let maleCharacters = viewModel.characters.filter { $0.gender.lowercased() == "male" }
+        XCTAssertEqual(viewModel.characters.count, maleCharacters.count)
+    }
+    
+    func testApplyMultipleFilters() async {
+        // Given
+        let allCharacters = CharacterMock.charactersMocks
+        mockUseCases.charactersToReturn = allCharacters
+        
+        // When
+        viewModel.applyFilters(status: .alive, gender: .male)
+        
+        // Wait for async operation
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then
+        XCTAssertEqual(viewModel.filters.status, .alive)
+        XCTAssertEqual(viewModel.filters.gender, .male)
+        
+        // Verify only alive male characters are shown
+        let filteredCharacters = viewModel.characters.filter {
+            $0.status.lowercased() == "alive" && $0.gender.lowercased() == "male"
+        }
+        XCTAssertEqual(viewModel.characters.count, filteredCharacters.count)
+    }
+    
+    func testClearFilters() async {
+        // Given
+        let allCharacters = CharacterMock.charactersMocks
+        mockUseCases.charactersToReturn = allCharacters
+        
+        // Apply filters first
+        viewModel.applyFilters(status: .alive, gender: .male)
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // When - Clear filters
+        viewModel.applyFilters(status: nil, gender: nil)
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then
         XCTAssertNil(viewModel.filters.status)
         XCTAssertNil(viewModel.filters.gender)
-        XCTAssertTrue(viewModel.filters.species.isEmpty)
+        XCTAssertEqual(viewModel.characters.count, 5) // All characters should be shown
     }
     
-    // MARK: - Cache Tests
-    
-    func testClearCache() async {
+    func testFiltersWithSearch() async {
         // Given
-        let initialStats = (keys: ["test1", "test2"], size: Int64(1024))
-        mockUseCases.cacheStats = initialStats
+        let searchQuery = "Smith"
+        mockUseCases.charactersToReturn = [
+            CharacterMock.mortySmithCharacter,
+            CharacterMock.summerSmithCharacter,
+            CharacterMock.bethSmithCharacter
+        ]
         
-        // When
-        await viewModel.clearCache()
+        // Apply gender filter
+        viewModel.applyFilters(status: nil, gender: .female)
+        try? await Task.sleep(nanoseconds: 100_000_000)
         
-        // Then - Cache should be cleared
-        XCTAssertTrue(viewModel.cacheStats.keys.isEmpty)
-        XCTAssertEqual(viewModel.cacheStats.size, 0)
-    }
-    
-    func testLoadCacheStats() async {
-        // Given
-        let expectedStats = (keys: ["character_1", "character_2"], size: Int64(2048))
-        mockUseCases.cacheStats = expectedStats
-        
-        // When
-        await viewModel.loadCacheStats()
+        // When - Search with active filters
+        await viewModel.searchCharacters(with: searchQuery)
         
         // Then
-        XCTAssertEqual(viewModel.cacheStats.keys, expectedStats.keys)
-        XCTAssertEqual(viewModel.cacheStats.size, expectedStats.size)
+        XCTAssertEqual(viewModel.characters.count, 2) // Only female Smith characters
+        let femaleSmithCharacters = viewModel.characters.filter {
+            $0.name.contains("Smith") && $0.gender.lowercased() == "female"
+        }
+        XCTAssertEqual(viewModel.characters.count, femaleSmithCharacters.count)
     }
     
-    // MARK: - Computed Properties Tests
+    // MARK: - Pagination Tests
     
-    func testHasActiveFilters() {
-        // Test no filters
-        XCTAssertFalse(viewModel.hasActiveFilters)
+    func testLoadMoreCharacters() async {
+        // Given
+        let firstPageCharacters = Array(CharacterMock.charactersMocks.prefix(3))
+        let secondPageCharacters = Array(CharacterMock.charactersMocks.suffix(2))
         
-        // Test status filter
-        viewModel.filters.status = .alive
-        XCTAssertTrue(viewModel.hasActiveFilters)
+        mockUseCases.charactersToReturn = firstPageCharacters
         
-        // Test gender filter
-        viewModel.filters.status = nil
-        viewModel.filters.gender = .male
-        XCTAssertTrue(viewModel.hasActiveFilters)
+        // Load first page
+        await viewModel.loadCharacters()
         
-        // Test species filter
-        viewModel.filters.gender = nil
-        viewModel.filters.species = "Human"
-        XCTAssertTrue(viewModel.hasActiveFilters)
+        // Setup second page
+        mockUseCases.charactersToReturn = secondPageCharacters
         
-        // Test multiple filters
-        viewModel.filters.status = .alive
-        viewModel.filters.gender = .male
-        viewModel.filters.species = "Human"
-        XCTAssertTrue(viewModel.hasActiveFilters)
+        // When - Load more
+        await viewModel.loadCharacters()
+        
+        // Then
+        XCTAssertEqual(viewModel.characters.count, 5)
+        XCTAssertFalse(viewModel.isLoading)
+    }
+    
+    func testLoadMoreCharactersWhenNoMorePages() async {
+        // Given
+        mockUseCases.charactersToReturn = []
+        
+        // When
+        await viewModel.loadCharacters()
+        
+        // Then
+        XCTAssertTrue(viewModel.characters.isEmpty)
+        XCTAssertFalse(viewModel.hasMorePages)
+    }
+    
+    func testRefresh() async {
+        // Given
+        mockUseCases.charactersToReturn = CharacterMock.charactersMocks
+        await viewModel.loadCharacters()
+        
+        let initialCount = viewModel.characters.count
+        
+        // When
+        await viewModel.refresh()
+        
+        // Then
+        XCTAssertEqual(viewModel.characters.count, initialCount)
+        XCTAssertFalse(viewModel.isLoading)
     }
 }

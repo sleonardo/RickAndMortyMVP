@@ -22,7 +22,7 @@ class CharactersViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var filters = CharacterFilters()
     
-    private let useCases: CharacterUseCases
+    private let useCases: CharacterUseCasesProtocol
     private var currentPage = 1
     private var searchTask: Task<Void, Never>?
     
@@ -32,7 +32,7 @@ class CharactersViewModel: ObservableObject {
     }
     
     // For previews with use cases
-    init(useCases: CharacterUseCases) {
+    init(useCases: CharacterUseCasesProtocol) {
         self.useCases = useCases
     }
     

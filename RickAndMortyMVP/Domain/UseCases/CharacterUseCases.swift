@@ -8,7 +8,7 @@
 import Foundation
 import RickMortySwiftApi
 
-class CharacterUseCases {
+class CharacterUseCases: CharacterUseCasesProtocol {
     private let repository: CharacterRepositoryProtocol
     
     init(repository: CharacterRepositoryProtocol) {
