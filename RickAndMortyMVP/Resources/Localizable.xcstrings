@@ -59,6 +59,12 @@
         }
       }
     },
+    "•" : {
+
+    },
+    "Active Filters:" : {
+
+    },
     "All" : {
       "localizations" : {
         "en" : {
@@ -91,7 +97,7 @@
         }
       }
     },
-    "Cache Info" : {
+    "Apply Filters" : {
 
     },
     "Cache Information" : {
@@ -213,11 +219,11 @@
         }
       }
     },
-    "Characters" : {
-
-    },
     "characters_page_%lld" : {
       "comment" : "Characters Page"
+    },
+    "Clear All" : {
+
     },
     "Clear Cache" : {
       "localizations" : {
@@ -231,39 +237,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Borrar caché"
-          }
-        }
-      }
-    },
-    "Clear Filters" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Clear Filters"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Borrar filtros"
-          }
-        }
-      }
-    },
-    "Clear Search & Filters" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Clear Search & Filters"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Borrar búsqueda y filtros"
           }
         }
       }
@@ -309,23 +282,6 @@
     "Error details: %@" : {
 
     },
-    "Exploring the multiverse..." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exploring the multiverse..."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Explorando el multiverso..."
-          }
-        }
-      }
-    },
     "Filters" : {
       "localizations" : {
         "en" : {
@@ -361,57 +317,6 @@
     "Information" : {
       "comment" : "Info title"
     },
-    "Last location: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Last location: %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Última ubicación: %@"
-          }
-        }
-      }
-    },
-    "Load Characters" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Load Characters"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cargar personajes"
-          }
-        }
-      }
-    },
-    "Loading Characters" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Loading Characters"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cargando personajes"
-          }
-        }
-      }
-    },
     "Loading characters..." : {
 
     },
@@ -431,22 +336,8 @@
         }
       }
     },
-    "Loading more..." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Loading more..."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cargando más..."
-          }
-        }
-      }
+    "Loading more characters..." : {
+
     },
     "No cached items" : {
       "localizations" : {
@@ -464,46 +355,6 @@
         }
       }
     },
-    "No characters found" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No characters found"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No se encontraron caracteres"
-          }
-        }
-      }
-    },
-    "No more characters to load" : {
-
-    },
-    "No results for \"%@\"" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No results for \"%@\""
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin resultados para \"%@\""
-          }
-        }
-      }
-    },
-    "Refresh" : {
-
-    },
     "Refresh Stats" : {
       "localizations" : {
         "en" : {
@@ -519,6 +370,9 @@
           }
         }
       }
+    },
+    "Reset Filters" : {
+
     },
     "Retry" : {
       "localizations" : {
@@ -540,7 +394,6 @@
 
     },
     "Rick & Morty" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -571,6 +424,12 @@
           }
         }
       }
+    },
+    "Select Gender" : {
+
+    },
+    "Select Status" : {
+
     },
     "Server error" : {
       "comment" : "Server error title"
@@ -624,22 +483,6 @@
         }
       }
     },
-    "Species" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Species"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Especies"
-          }
-        }
-      }
-    },
     "Status" : {
       "localizations" : {
         "en" : {
@@ -659,28 +502,14 @@
     "Try Again" : {
 
     },
-    "Try searching for different characters" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Try searching for different characters"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Intenta buscar diferentes personajes"
-          }
-        }
-      }
-    },
     "Updating..." : {
 
     },
     "Warning" : {
       "comment" : "Warning title"
+    },
+    "You've reached the end" : {
+
     }
   },
   "version" : "1.0"

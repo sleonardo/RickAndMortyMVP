@@ -88,7 +88,7 @@ class CharactersViewModel: ObservableObject {
                 characters = searchResults
                 hasMorePages = false
             } catch {
-                if let useCaseError = error as? UseCaseError,
+                if let useCaseError = error as? ErrorUseCase,
                    useCaseError == .notFound {
                     characters = []
                 } else {
@@ -175,8 +175,8 @@ class CharactersViewModel: ObservableObject {
     private func handleError(_ error: Error) {
         showError = true
         
-        if let useCaseError = error as? UseCaseError {
-            errorMessage = useCaseError.localizedDescription
+        if let errorUseCase = error as? ErrorUseCase {
+            errorMessage = errorUseCase.localizedDescription
         } else if let repositoryError = error as? RepositoryError {
             errorMessage = repositoryError.localizedDescription
         } else {
@@ -199,25 +199,4 @@ struct CacheStats {
 struct CharacterFilters {
     var status: Status?
     var gender: Gender?
-}
-
-// MARK: - UseCase Error
-enum UseCaseError: Error, LocalizedError {
-    case notFound
-    case networkError
-    case invalidData
-    case cacheError
-    
-    var errorDescription: String? {
-        switch self {
-        case .notFound:
-            return "The requested resource was not found."
-        case .networkError:
-            return "Network connection error. Please check your internet."
-        case .invalidData:
-            return "The data received is invalid."
-        case .cacheError:
-            return "Error accessing cache."
-        }
-    }
 }

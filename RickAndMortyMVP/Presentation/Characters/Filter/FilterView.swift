@@ -8,46 +8,55 @@
 import SwiftUI
 import RickMortySwiftApi
 
-struct FilterView: View {
-    @Binding var filters: Filters
+// MARK: - Filters View
+struct FiltersView: View {
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject var viewModel: CharactersViewModel
     
-    // Arrays for pickers
-    private let statusCases: [Status] = [.alive, .dead, .unknown]
-    private let genderCases: [Gender] = [.female, .male, .genderless, .unknown]
+    @State private var selectedStatus: Status?
+    @State private var selectedGender: Gender?
     
     var body: some View {
         NavigationView {
             Form {
-                Section("Status") {
-                    Picker("Status", selection: $filters.status) {
-                        Text("All").tag(nil as Status?)
-                        ForEach(statusCases, id: \.self) { status in
-                            Text(status.rawValue.capitalized).tag(status as Status?)
+                Section(header: Text("Status")) {
+                    Picker("Select Status", selection: $selectedStatus) {
+                        Text("All").tag(Optional<Status>.none)
+                        ForEach(Status.filterCasesStatus, id: \.self) { status in
+                            Text(status.rawValue.capitalized).tag(Optional(status))
                         }
                     }
                     .pickerStyle(.segmented)
                 }
                 
-                Section("Gender") {
-                    Picker("Gender", selection: $filters.gender) {
-                        Text("All").tag(nil as Gender?)
-                        ForEach(genderCases, id: \.self) { gender in
-                            Text(gender.rawValue.capitalized).tag(gender as Gender?)
+                Section(header: Text("Gender")) {
+                    Picker("Select Gender", selection: $selectedGender) {
+                        Text("All").tag(Optional<Gender>.none)
+                        ForEach(Gender.filterCasesGender, id: \.self) { gender in
+                            Text(gender.rawValue.capitalized).tag(Optional(gender))
                         }
                     }
                     .pickerStyle(.segmented)
-                }
-                
-                Section("Species") {
-                    TextField("Species", text: $filters.species)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
                 }
                 
                 Section {
-                    Button("Clear Filters") {
-                        filters = Filters()
+                    Button("Apply Filters") {
+                        viewModel.applyFilters(status: selectedStatus, gender: selectedGender)
+                        dismiss()
                     }
+                    .frame(maxWidth: .infinity)
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Color.blue)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    
+                    Button("Reset Filters") {
+                        selectedStatus = nil
+                        selectedGender = nil
+                        viewModel.applyFilters(status: nil, gender: nil)
+                        dismiss()
+                    }
+                    .frame(maxWidth: .infinity)
                     .foregroundColor(.red)
                 }
             }
@@ -59,6 +68,11 @@ struct FilterView: View {
                         dismiss()
                     }
                 }
+            }
+            .onAppear {
+                // Initialize with current filters
+                selectedStatus = viewModel.filters.status
+                selectedGender = viewModel.filters.gender
             }
         }
     }
