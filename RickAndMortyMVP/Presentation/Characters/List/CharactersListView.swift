@@ -63,9 +63,7 @@ struct CharactersListView: View {
         ScrollView {
             VStack(spacing: 20) {
                 // Show active filters if they exist
-                if hasActiveFilters {
-                    activeFiltersView
-                }
+                activeFiltersView
                 
                 searchBarView
                 charactersContentView
@@ -78,30 +76,52 @@ struct CharactersListView: View {
     
     // View to show active filters
     private var activeFiltersView: some View {
-        HStack {
-            Text("Active Filters:")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
-            if let status = viewModel.filters.status {
-                FilterChip(text: "Status: \(status.rawValue)",
-                          onRemove: { viewModel.applyFilters(status: nil, gender: viewModel.filters.gender) })
+        Group {
+            if viewModel.filters.hasActiveFilters {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Text("Active Filters:")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        
+                        Spacer()
+                        
+                        Button("Clear All") {
+                            print("🗑️ Clearing all filters")
+                            viewModel.applyFilters(status: nil, gender: nil)
+                        }
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                    }
+                    
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            if let status = viewModel.filters.status {
+                                FilterChip(
+                                    text: "Status: \(status.rawValue)",
+                                    onRemove: {
+                                        print("🗑️ Removing status filter")
+                                        viewModel.applyFilters(status: nil, gender: viewModel.filters.gender)
+                                    }
+                                )
+                            }
+                            
+                            if let gender = viewModel.filters.gender {
+                                FilterChip(
+                                    text: "Gender: \(gender.rawValue)",
+                                    onRemove: {
+                                        print("🗑️ Removing gender filter")
+                                        viewModel.applyFilters(status: viewModel.filters.status, gender: nil)
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.top, 8)
             }
-            
-            if let gender = viewModel.filters.gender {
-                FilterChip(text: "Gender: \(gender.rawValue)",
-                          onRemove: { viewModel.applyFilters(status: viewModel.filters.status, gender: nil) })
-            }
-            
-            Spacer()
-            
-            Button("Clear All") {
-                viewModel.applyFilters(status: nil, gender: nil)
-            }
-            .font(.caption)
-            .foregroundColor(.blue)
         }
-        .padding(.horizontal)
     }
     
     private var hasActiveFilters: Bool {

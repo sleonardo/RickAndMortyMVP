@@ -20,7 +20,11 @@ class CharactersViewModel: ObservableObject {
     
     // Properties for search and filters
     @Published var searchText: String = ""
-    @Published var filters = CharacterFilters()
+    @Published var filters = CharacterFilters() {
+        didSet {
+            print("🔄 Filters updated - Status: \(filters.status?.rawValue ?? "None"), Gender: \(filters.gender?.rawValue ?? "None")")
+        }
+    }
     
     private let useCases: CharacterUseCasesProtocol
     private var currentPage = 1
@@ -185,7 +189,7 @@ class CharactersViewModel: ObservableObject {
     }
     
     private func refreshWithFilters() async {
-        print("🔄 Refreshing with filters")
+        print("🔄 Refreshing with filters - Status: \(filters.status?.rawValue ?? "None"), Gender: \(filters.gender?.rawValue ?? "None")")
         characters.removeAll()
         currentPage = 1
         hasMorePages = true
@@ -239,10 +243,4 @@ struct CacheStats {
     let size: Int64
     
     static let empty = CacheStats(keys: [], size: 0)
-}
-
-// MARK: - Character Filters
-struct CharacterFilters {
-    var status: Status?
-    var gender: Gender?
 }
