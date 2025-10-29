@@ -26,10 +26,6 @@ struct EpisodeRow: View {
             }
             
             Spacer()
-            
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundColor(.gray)
         }
         .padding(12)
         .background(Color(.systemGray6))
