@@ -87,7 +87,7 @@ struct CharacterDetailView: View {
                                 ProgressView()
                                     .scaleEffect(1.2)
                                     .tint(.white)
-                                Text("Loading image...")
+                                Text(String(localized: "loading_image_text"))
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -138,16 +138,16 @@ struct CharacterDetailView: View {
     private var infoSection: some View {
         AnimatedCardView(delay: 0.2) {
             VStack(alignment: .leading, spacing: 16) {
-                SectionHeader(title: "Information", icon: "info.circle")
+                SectionHeader(title: String(localized: "information_info_title"), icon: "info.circle")
                 
                 LazyVStack(spacing: 12) {
-                    InfoRow(icon: "person.text.rectangle", title: "Gender", value: character.gender)
-                    InfoRow(icon: "circle.dashed", title: "Species", value: character.species)
+                    InfoRow(icon: "person.text.rectangle", title: String(localized: "gender_info_title"), value: character.gender)
+                    InfoRow(icon: "circle.dashed", title: String(localized: "species_info_title"), value: character.species)
                     
                     if !character.type.isEmpty {
-                        InfoRow(icon: "tag", title: "Type", value: character.type)
+                        InfoRow(icon: "tag", title: String(localized: "type_info_title"), value: character.type)
                     } else {
-                        InfoRow(icon: "tag", title: "Type", value: "Unknown")
+                        InfoRow(icon: "tag", title: String(localized: "type_info_title"), value: "Unknown")
                     }
                 }
             }
@@ -161,11 +161,11 @@ struct CharacterDetailView: View {
     private var locationSection: some View {
         AnimatedCardView(delay: 0.4) {
             VStack(alignment: .leading, spacing: 16) {
-                SectionHeader(title: "Location", icon: "map")
+                SectionHeader(title: String(localized: "location_title"), icon: "map")
                 
                 LazyVStack(spacing: 12) {
-                    InfoRow(icon: "globe", title: "Origin", value: character.origin.name)
-                    InfoRow(icon: "mappin.and.ellipse", title: "Last Known", value: character.location.name)
+                    InfoRow(icon: "globe", title: String(localized: "origin_info_title"), value: character.origin.name)
+                    InfoRow(icon: "mappin.and.ellipse", title: String(localized: "last_known_info_title"), value: character.location.name)
                 }
             }
             .padding()
@@ -179,12 +179,12 @@ struct CharacterDetailView: View {
         AnimatedCardView(delay: 0.6) {
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
-                    SectionHeader(title: "Episodes", icon: "play.tv")
+                    SectionHeader(title: String(localized: "episodes_title"), icon: "play.tv")
                     
                     Spacer()
                     
                     if character.episode.count > 5 {
-                        Button(showFullEpisodes ? "Show Less" : "Show All") {
+                        Button(showFullEpisodes ? String(localized: "show_less_button") : String(localized: "show_all_button")) {
                             withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                                 showFullEpisodes.toggle()
                             }
@@ -213,7 +213,8 @@ struct CharacterDetailView: View {
                     }
                     
                     if character.episode.count > 5 && !showFullEpisodes {
-                        Text("And \(character.episode.count - 5) more episodes...")
+                        Text(String(localized: "more_episode_\(character.episode.count - 5)"))
+                        //Text("And \(character.episode.count - 5) more episodes...")
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .frame(maxWidth: .infinity, alignment: .center)

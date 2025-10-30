@@ -7,8 +7,22 @@
 import Foundation
 import RickMortySwiftApi
 
-struct Filters {
+struct CharacterFilters {
     var status: Status?
     var gender: Gender?
-    var species: String = ""
+    
+    var hasActiveFilters: Bool {
+        return status != nil || gender != nil
+    }
+    
+    var description: String {
+        var components: [String] = []
+        if let status = status {
+            components.append(String(localized: "status_text \(status.rawValue)"))
+        }
+        if let gender = gender {
+            components.append(String(localized: "gender_text \(gender.rawValue)"))
+        }
+        return components.joined(separator: ", ")
+    }
 }

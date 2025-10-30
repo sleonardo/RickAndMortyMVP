@@ -17,25 +17,25 @@ struct CacheInfoView: View {
     var body: some View {
         NavigationView {
             List {
-                Section("Cache Statistics") {
+                Section(String(localized:"cache_statistics_title")) {
                     HStack {
-                        Text("Cached Items")
+                        Text(String(localized:"cached_items_text"))
                         Spacer()
                         Text("\(viewModel.cacheStats.keys.count)")
                             .foregroundColor(.secondary)
                     }
                     
                     HStack {
-                        Text("Cache Size")
+                        Text(String(localized:"cache_size_text"))
                         Spacer()
                         Text(formatBytes(viewModel.cacheStats.size))
                             .foregroundColor(.secondary)
                     }
                 }
                 
-                Section("Cached Keys") {
+                Section(String(localized:"cached_keys_title")) {
                     if viewModel.cacheStats.keys.isEmpty {
-                        Text("No cached items")
+                        Text(String(localized:"no_cached_items_text"))
                             .foregroundColor(.secondary)
                             .italic()
                     } else {
@@ -54,7 +54,7 @@ struct CacheInfoView: View {
                 }
                 
                 Section {
-                    Button("Clear Cache", role: .destructive) {
+                    Button(String(localized:"clear_cache_button"), role: .destructive) {
                         Task {
                             isLoading = true
                             await viewModel.clearCache()
@@ -63,7 +63,7 @@ struct CacheInfoView: View {
                     }
                     .disabled(isLoading)
                     
-                    Button("Refresh Stats") {
+                    Button(String(localized:"refresh_stats_button")) {
                         Task {
                             isLoading = true
                             await viewModel.loadCacheStats()
@@ -79,18 +79,18 @@ struct CacheInfoView: View {
                             Spacer()
                             ProgressView()
                                 .scaleEffect(0.8)
-                            Text("Updating...")
+                            Text(String(localized:"updating_text"))
                                 .foregroundColor(.secondary)
                             Spacer()
                         }
                     }
                 }
             }
-            .navigationTitle("Cache Information")
+            .navigationTitle(String(localized:"cache_information_text"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
+                    Button(String(localized:"done_button")) {
                         dismiss()
                     }
                 }

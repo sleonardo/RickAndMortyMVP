@@ -72,10 +72,10 @@
     "•" : {
 
     },
-    "Active Filters:" : {
+    "active_filters_text" : {
 
     },
-    "All" : {
+    "all_text" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -91,76 +91,34 @@
         }
       }
     },
-    "And %lld more episodes..." : {
+    "apply_button" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "And %lld more episodes..."
+            "value" : "Apply"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Y %lld episodios más..."
+            "value" : "Aplicar"
           }
         }
       }
     },
-    "Apply Filters" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aplicar filtros"
-          }
-        }
-      }
-    },
-    "Cache Information" : {
+    "apply_filters_button" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cache Information"
+            "value" : "Apply Filters"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Información de caché"
-          }
-        }
-      }
-    },
-    "Cache Size" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cache Size"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tamaño de la caché"
-          }
-        }
-      }
-    },
-    "Cache Statistics" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cache Statistics"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estadísticas de caché"
+            "value" : "Aplicar Filtros"
           }
         }
       }
@@ -177,34 +135,67 @@
       },
       "shouldTranslate" : false
     },
-    "Cached Items" : {
+    "cache_error_message" : {
+      "comment" : "Error accessing cached data.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cached Items"
+            "value" : "Error accessing cached data."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elementos almacenados en caché"
+            "value" : "Error al acceder a los datos almacenados en caché."
           }
         }
       }
     },
-    "Cached Keys" : {
+    "cache_information_text" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cached Keys"
+            "value" : "Cache Information"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Claves almacenadas en caché"
+            "value" : "Información de caché"
+          }
+        }
+      }
+    },
+    "cache_size_text" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cache Size"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño de la caché"
+          }
+        }
+      }
+    },
+    "cache_statistics_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cache Statistics"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estadísticas de caché"
           }
         }
       }
@@ -221,8 +212,56 @@
       },
       "shouldTranslate" : false
     },
+    "cached_items_text" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cached Items"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elementos almacenados en caché"
+          }
+        }
+      }
+    },
+    "cached_keys_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cached Keys"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claves almacenadas en caché"
+          }
+        }
+      }
+    },
     "Cancel" : {
       "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        }
+      }
+    },
+    "cancel_button" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -234,17 +273,76 @@
     "character_%lld" : {
       "comment" : "Character ID"
     },
-    "Characters list" : {
-
+    "characters_list_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Characters list"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista de personajes"
+          }
+        }
+      }
+    },
+    "characters_list_navigation_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rick & Morty"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rick y Morty"
+          }
+        }
+      }
     },
     "characters_page_%lld" : {
       "comment" : "Characters Page",
       "shouldTranslate" : false
     },
-    "Clear All" : {
-
+    "check_your_connection_message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to load characters. Please check your connection and try again."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pueden cargar los caracteres. Por favor, comprueba tu conexión e intenta de nuevo."
+          }
+        }
+      }
     },
-    "Clear Cache" : {
+    "clear_all_button" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear all"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borrar todo"
+          }
+        }
+      }
+    },
+    "clear_cache_button" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -260,13 +358,26 @@
         }
       }
     },
-    "Connection issue" : {
-      "comment" : "Network error title"
+    "current_selection_text" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current Selection"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selección Actual"
+          }
+        }
+      }
     },
     "Dismiss error" : {
 
     },
-    "Done" : {
+    "done_button" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -304,10 +415,26 @@
         }
       }
     },
+    "episodes_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episodes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episodios"
+          }
+        }
+      }
+    },
     "Error details: %@" : {
 
     },
-    "Filters" : {
+    "filter_navigation_title" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -323,7 +450,23 @@
         }
       }
     },
-    "Gender" : {
+    "gender_info_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gender info"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Información de género"
+          }
+        }
+      }
+    },
+    "gender_text" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -339,31 +482,117 @@
         }
       }
     },
-    "Information" : {
-      "comment" : "Info title"
-    },
-    "Loading characters..." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cargando personajes..."
-          }
-        }
-      }
-    },
-    "Loading image..." : {
+    "gender_text %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Loading image..."
+            "value" : "Gender: %@"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cargando imagen..."
+            "value" : "Género: %@"
+          }
+        }
+      }
+    },
+    "gender_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gender:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Género:"
+          }
+        }
+      }
+    },
+    "general_banner_error" : {
+      "comment" : "General error title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Something went wrong"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algo salió mal."
+          }
+        }
+      }
+    },
+    "information_banner_error" : {
+      "comment" : "Info title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Information"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Información"
+          }
+        }
+      }
+    },
+    "information_info_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Information"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Información"
+          }
+        }
+      }
+    },
+    "invalid_data_error_message" : {
+      "comment" : "The data received is invalid.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The data received is invalid."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los datos recibidos no son válidos."
+          }
+        }
+      }
+    },
+    "last_known_info_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last known"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Último conocido"
           }
         }
       }
@@ -388,6 +617,70 @@
         }
       }
     },
+    "loading_characters_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading characters..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando personajes..."
+          }
+        }
+      }
+    },
+    "loading_image_text" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading image..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando imagen..."
+          }
+        }
+      }
+    },
+    "location_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ubicación"
+          }
+        }
+      }
+    },
+    "more_episode_%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "And %lld more episodes..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Y %lld episodios más..."
+          }
+        }
+      }
+    },
     "Name: %@, Gender: %@, Status: %@" : {
       "localizations" : {
         "en" : {
@@ -404,7 +697,51 @@
         }
       }
     },
-    "No cached items" : {
+    "network_banner_error" : {
+      "comment" : "Network error title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection issue"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Problema de conexión"
+          }
+        }
+      }
+    },
+    "network_error_message" : {
+      "comment" : "Network connection error. Please check your internet.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network connection error. Please check your internet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error de conexión de red. Por favor, revise su conexión a Internet."
+          }
+        }
+      }
+    },
+    "No more characters to load" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay más caracteres que cargar."
+          }
+        }
+      }
+    },
+    "no_cached_items_text" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -420,8 +757,14 @@
         }
       }
     },
-    "No characters available" : {
+    "no_characters_available_label" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No characters available"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -430,12 +773,84 @@
         }
       }
     },
-    "No more characters to load" : {
+    "no_characters_found_for_message %@" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No characters found for %@"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No hay más caracteres que cargar."
+            "value" : "No se han encontrado personajes para %@"
+          }
+        }
+      }
+    },
+    "no_characters_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Characters"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin Personajes"
+          }
+        }
+      }
+    },
+    "no_results_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Results"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin Resultados"
+          }
+        }
+      }
+    },
+    "not_found_error_message" : {
+      "comment" : "The requested resource was not found.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The requested resource was not found."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró el recurso solicitado."
+          }
+        }
+      }
+    },
+    "origin_info_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Origin"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Origen"
           }
         }
       }
@@ -450,8 +865,14 @@
         }
       }
     },
-    "Pull to refresh or check your internet connection" : {
+    "pull_to_refresh_or_check_connection_label" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pull to refresh or check your internet connection"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -460,7 +881,7 @@
         }
       }
     },
-    "Refresh Stats" : {
+    "refresh_stats_button" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -476,8 +897,14 @@
         }
       }
     },
-    "Reset Filters" : {
+    "reset_filters_button" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset Filters"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -486,7 +913,17 @@
         }
       }
     },
-    "Retry" : {
+    "Retry operation" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar operación"
+          }
+        }
+      }
+    },
+    "retry_button" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -502,32 +939,6 @@
         }
       }
     },
-    "Retry operation" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reintentar operación"
-          }
-        }
-      }
-    },
-    "Rick & Morty" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rick & Morty"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rick y Morty"
-          }
-        }
-      }
-    },
     "search_characters" : {
       "comment" : "Search characters...",
       "localizations" : {
@@ -539,35 +950,53 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Buscar personajes..."
           }
         }
       }
     },
-    "Select Gender" : {
+    "select_gender_text" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Gender"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seleccionar género"
+            "value" : "Seleccionar Género"
           }
         }
       }
     },
-    "Select Status" : {
+    "select_status_text" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Status"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seleccionar estatus"
+            "value" : "Seleccionar Estatus"
           }
         }
       }
     },
-    "Server error" : {
+    "server_banner_error" : {
       "comment" : "Server error title",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server error"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -576,7 +1005,7 @@
         }
       }
     },
-    "Show All" : {
+    "show_all_button" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -587,12 +1016,12 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostrar todo"
+            "value" : "Mostrar Todo"
           }
         }
       }
     },
-    "Show Less" : {
+    "show_less_button" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -603,29 +1032,28 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostrar menos"
+            "value" : "Mostrar Menos"
           }
         }
       }
     },
-    "Something went wrong" : {
-      "comment" : "General error title",
+    "species_info_title" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Something went wrong"
+            "value" : "Species"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Algo salió mal."
+            "value" : "Especies"
           }
         }
       }
     },
-    "Status" : {
+    "status_text" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -641,17 +1069,112 @@
         }
       }
     },
-    "Swipe up or down to browse characters" : {
-
+    "status_text %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estatus: %@"
+          }
+        }
+      }
     },
-    "Try Again" : {
-
+    "status_title" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estatus:"
+          }
+        }
+      }
     },
-    "Updating..." : {
-
+    "swipe_up_or_down_to_browse_characters_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe up or down to browse characters"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desliza el dedo hacia arriba o hacia abajo para explorar los personajes."
+          }
+        }
+      }
     },
-    "Warning" : {
-      "comment" : "Warning title"
+    "try_again_button" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Again"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inténtalo de nuevo"
+          }
+        }
+      }
+    },
+    "type_info_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo"
+          }
+        }
+      }
+    },
+    "updating_text" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Updating…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualización"
+          }
+        }
+      }
+    },
+    "warning_banner_error" : {
+      "comment" : "Warning title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warning"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advertencia"
+          }
+        }
+      }
     },
     "You've reached the end" : {
 

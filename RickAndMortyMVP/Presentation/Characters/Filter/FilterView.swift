@@ -13,15 +13,26 @@ struct FiltersView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: CharactersViewModel
     
-    @State private var selectedStatus: Status?
-    @State private var selectedGender: Gender?
+    private var selectedStatus: Binding<Status?> {
+        Binding(
+            get: { viewModel.filters.status },
+            set: { viewModel.filters.status = $0 }
+        )
+    }
+    
+    private var selectedGender: Binding<Gender?> {
+        Binding(
+            get: { viewModel.filters.gender },
+            set: { viewModel.filters.gender = $0 }
+        )
+    }
     
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Status")) {
-                    Picker("Select Status", selection: $selectedStatus) {
-                        Text("All").tag(Optional<Status>.none)
+                Section(header: Text(String(localized:"status_title"))) {
+                    Picker(String(localized:"select_status_text"), selection: selectedStatus) {
+                        Text(String(localized:"all_text")).tag(Optional<Status>.none)
                         ForEach(Status.filterCasesStatus, id: \.self) { status in
                             Text(status.rawValue.capitalized).tag(Optional(status))
                         }
@@ -29,9 +40,9 @@ struct FiltersView: View {
                     .pickerStyle(.segmented)
                 }
                 
-                Section(header: Text("Gender")) {
-                    Picker("Select Gender", selection: $selectedGender) {
-                        Text("All").tag(Optional<Gender>.none)
+                Section(header: Text(String(localized:"gender_title"))) {
+                    Picker(String(localized:"select_gender_text"), selection: selectedGender) {
+                        Text(String(localized:"all_text")).tag(Optional<Gender>.none)
                         ForEach(Gender.filterCasesGender, id: \.self) { gender in
                             Text(gender.rawValue.capitalized).tag(Optional(gender))
                         }
@@ -39,9 +50,35 @@ struct FiltersView: View {
                     .pickerStyle(.segmented)
                 }
                 
+                if selectedStatus.wrappedValue != nil || selectedGender.wrappedValue != nil {
+                    Section(header: Text(String(localized:"current_selection_text"))) {
+                        if let status = selectedStatus.wrappedValue {
+                            HStack {
+                                Text(String(localized:"status_text"))
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                                Text(status.rawValue.capitalized)
+                                    .foregroundColor(.blue)
+                                    .fontWeight(.semibold)
+                            }
+                        }
+                        
+                        if let gender = selectedGender.wrappedValue {
+                            HStack {
+                                Text(String(localized:"gender_text"))
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                                Text(gender.rawValue.capitalized)
+                                    .foregroundColor(.blue)
+                                    .fontWeight(.semibold)
+                            }
+                        }
+                    }
+                }
+                
                 Section {
-                    Button("Apply Filters") {
-                        viewModel.applyFilters(status: selectedStatus, gender: selectedGender)
+                    Button(String(localized:"apply_filters_button")) {
+                        print("🎯 Applying filters from FiltersView - Status: \(selectedStatus.wrappedValue?.rawValue ?? "None"), Gender: \(selectedGender.wrappedValue?.rawValue ?? "None")")
                         dismiss()
                     }
                     .frame(maxWidth: .infinity)
@@ -50,29 +87,40 @@ struct FiltersView: View {
                     .background(Color.blue)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     
-                    Button("Reset Filters") {
-                        selectedStatus = nil
-                        selectedGender = nil
-                        viewModel.applyFilters(status: nil, gender: nil)
-                        dismiss()
+                    if selectedStatus.wrappedValue != nil || selectedGender.wrappedValue != nil {
+                        Button(String(localized:"reset_filters_button")) {
+                            print("🔄 Resetting filters from FiltersView")
+                            selectedStatus.wrappedValue = nil
+                            selectedGender.wrappedValue = nil
+                        }
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.red)
                     }
-                    .frame(maxWidth: .infinity)
-                    .foregroundColor(.red)
                 }
             }
-            .navigationTitle("Filters")
+            .navigationTitle(String(localized:"filter_navigation_title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(String(localized:"cancel_button")) {
+                        print("❌ Canceling filters selection")
                         dismiss()
                     }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(String(localized:"apply_button")) {
+                        print("🎯 Applying filters from toolbar - Status: \(selectedStatus.wrappedValue?.rawValue ?? "None"), Gender: \(selectedGender.wrappedValue?.rawValue ?? "None")")
+                        dismiss()
+                    }
+                    .fontWeight(.semibold)
                 }
             }
             .onAppear {
-                // Initialize with current filters
-                selectedStatus = viewModel.filters.status
-                selectedGender = viewModel.filters.gender
+                print("📱 FiltersView appeared - Current filters: Status: \(viewModel.filters.status?.rawValue ?? "None"), Gender: \(viewModel.filters.gender?.rawValue ?? "None")")
+            }
+            .onDisappear {
+                print("📱 FiltersView disappeared")
             }
         }
     }

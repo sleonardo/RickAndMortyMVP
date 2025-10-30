@@ -42,7 +42,7 @@ struct EmptyStateView: View {
             .padding(.horizontal)
             
             if let action = action {
-                Button("Try Again") {
+                Button(String(localized:"try_again_button")) {
                     action()
                 }
                 .buttonStyle(.borderedProminent)
@@ -55,8 +55,8 @@ struct EmptyStateView: View {
 
 #Preview {
     EmptyStateView(
-        title: "No Characters",
-        message: "Unable to load characters. Please check your connection and try again.",
+        title: String(localized:"no_characters_title"),
+        message: String(localized:"check_your_connection_message"),
         systemImage: "person.slash",
         action: { print("Retry tapped") }
     )
