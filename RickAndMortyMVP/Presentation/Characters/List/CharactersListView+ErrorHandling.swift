@@ -19,7 +19,7 @@ struct ErrorBannerView: View {
             Text(message)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
-            Button("retry_button") {
+            Button(String(localized:"retry_button")) {
                 onRetry()
             }
             .buttonStyle(.borderedProminent)

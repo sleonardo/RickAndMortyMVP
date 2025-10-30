@@ -40,7 +40,7 @@ struct ErrorBanner: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .lineLimit(2)
-                        .accessibilityLabel("Error details: \(error)")
+                        .accessibilityLabel(String(localized: "error_details_message \(error)"))
                 }
                 .accessibilityElement(children: .combine)
                 
@@ -59,16 +59,16 @@ struct ErrorBanner: View {
                                 .background(Color.secondary.opacity(0.1))
                                 .clipShape(Circle())
                         }
-                        .accessibilityLabel("Dismiss error")
+                        .accessibilityLabel(String(localized:"dismiss_error_label"))
                     }
                     
                     if let onRetry = onRetry {
-                        Button("retry_button") {
+                        Button(String(localized:"retry_button")) {
                             onRetry()
                         }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
-                        .accessibilityLabel("Retry operation")
+                        .accessibilityLabel(String(localized:"retry_operation_label"))
                     }
                 }
             }

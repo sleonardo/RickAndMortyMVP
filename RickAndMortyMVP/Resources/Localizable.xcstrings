@@ -24,14 +24,9 @@
             "state" : "new",
             "value" : "%1$@ • %2$@"
           }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ • %2$@"
-          }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@. %@" : {
       "localizations" : {
@@ -41,7 +36,8 @@
             "value" : "%1$@. %2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%lld" : {
       "localizations" : {
@@ -70,10 +66,23 @@
       }
     },
     "•" : {
-
+      "shouldTranslate" : false
     },
     "active_filters_text" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active filters"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtros activos"
+          }
+        }
+      }
     },
     "all_text" : {
       "localizations" : {
@@ -271,7 +280,24 @@
       }
     },
     "character_%lld" : {
-      "comment" : "Character ID"
+      "comment" : "Character ID",
+      "shouldTranslate" : false
+    },
+    "character_info %@%@%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name: %1$@, Gender: %2$@, Status: %3$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre: %1$@, Género: %2$@, Estatus: %3$@"
+          }
+        }
+      }
     },
     "characters_list_label" : {
       "localizations" : {
@@ -374,8 +400,21 @@
         }
       }
     },
-    "Dismiss error" : {
-
+    "dismiss_error_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dismiss error"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ignorar error"
+          }
+        }
+      }
     },
     "done_button" : {
       "localizations" : {
@@ -393,11 +432,37 @@
         }
       }
     },
-    "Double tap to view details" : {
-
+    "double_tap_to_view_details_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double tap to view details"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque dos veces para ver los detalles.Click to apply"
+          }
+        }
+      }
     },
-    "End of characters list" : {
-
+    "end_characters_list_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End of characters list"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fin de la lista de personajes"
+          }
+        }
+      }
     },
     "Episode %lld" : {
       "localizations" : {
@@ -431,8 +496,21 @@
         }
       }
     },
-    "Error details: %@" : {
-
+    "error_details_message %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error details: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalles del error: %@"
+          }
+        }
+      }
     },
     "filter_navigation_title" : {
       "localizations" : {
@@ -597,26 +675,6 @@
         }
       }
     },
-    "Loading more characters" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cargando más personajes"
-          }
-        }
-      }
-    },
-    "Loading more characters..." : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cargando más personajes..."
-          }
-        }
-      }
-    },
     "loading_characters_label" : {
       "localizations" : {
         "en" : {
@@ -645,6 +703,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cargando imagen..."
+          }
+        }
+      }
+    },
+    "loading_more_characters_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading more characters..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando más personajes..."
           }
         }
       }
@@ -681,22 +755,6 @@
         }
       }
     },
-    "Name: %@, Gender: %@, Status: %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Name: %1$@, Gender: %2$@, Status: %3$@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nombre: %1$@, Género: %2$@, Estatus: %3$@"
-          }
-        }
-      }
-    },
     "network_banner_error" : {
       "comment" : "Network error title",
       "localizations" : {
@@ -727,16 +785,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Error de conexión de red. Por favor, revise su conexión a Internet."
-          }
-        }
-      }
-    },
-    "No more characters to load" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No hay más caracteres que cargar."
           }
         }
       }
@@ -806,6 +854,22 @@
         }
       }
     },
+    "no_more_characters_to_load_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No more characters to load"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay más caracteres que cargar."
+          }
+        }
+      }
+    },
     "no_results_title" : {
       "localizations" : {
         "en" : {
@@ -855,8 +919,14 @@
         }
       }
     },
-    "Please wait while more characters are loading" : {
+    "please_wait_more_characters_label" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please wait while more characters are loading"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -913,16 +983,6 @@
         }
       }
     },
-    "Retry operation" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reintentar operación"
-          }
-        }
-      }
-    },
     "retry_button" : {
       "localizations" : {
         "en" : {
@@ -935,6 +995,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reintentar"
+          }
+        }
+      }
+    },
+    "retry_operation_label" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retry operation"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reintentar operación"
           }
         }
       }
@@ -1087,6 +1163,12 @@
     },
     "status_title" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status:"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1176,8 +1258,21 @@
         }
       }
     },
-    "You've reached the end" : {
-
+    "you_have_reached_end_text" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You've reached the end"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Has llegado al final."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

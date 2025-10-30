@@ -29,7 +29,7 @@ struct CharactersListView: View {
         NavigationStack {
             contentView
                 .rickAndMortyGradient()
-                .navigationTitle("characters_list_navigation_title")
+                .navigationTitle(String(localized: "characters_list_navigation_title"))
                 .toolbar { toolbarContent }
                 .sheet(isPresented: $showingCacheInfo) {
                     CacheInfoView(viewModel: viewModel)
@@ -129,7 +129,7 @@ struct CharactersListView: View {
     }
     
     private var loadingView: some View {
-        ProgressView("loading_characters_label")
+        ProgressView(String(localized:"loading_characters_label"))
             .foregroundStyle(.white)
     }
     
@@ -209,8 +209,8 @@ struct CharactersListView: View {
         }
         .buttonStyle(PlainButtonStyle())
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Name: \(character.name), Gender: \(character.gender), Status: \(character.status)")
-        .accessibilityHint("Double tap to view details")
+        .accessibilityLabel(String(localized: "character_info \(character.name)\(character.gender)\(character.status)"))
+        .accessibilityHint(String(localized:"double_tap_to_view_details_label"))
         .accessibilityAddTraits(.isButton)
     }
     
@@ -221,19 +221,19 @@ struct CharactersListView: View {
     private var loadingMoreView: some View {
         Group {
             if viewModel.isLoading && !viewModel.characters.isEmpty {
-                ProgressView("Loading more characters...")
+                ProgressView(String(localized: "loading_more_characters_label"))
                     .padding()
                     .accessibilityElement(children: .combine)
-                    .accessibilityLabel("Loading more characters")
-                    .accessibilityHint("Please wait while more characters are loading")
+                    .accessibilityLabel(String(localized: "loading_more_characters_label"))
+                    .accessibilityHint(String(localized: "please_wait_more_characters_label"))
             } else if !viewModel.hasMorePages && !viewModel.characters.isEmpty {
-                Text("You've reached the end")
+                Text(String(localized: "you_have_reached_end_text"))
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .padding(.bottom, 20)
                     .accessibilityElement(children: .combine)
-                    .accessibilityLabel("End of characters list")
-                    .accessibilityHint("No more characters to load")
+                    .accessibilityLabel(String(localized: "end_characters_list_label"))
+                    .accessibilityHint(String(localized: "no_more_characters_to_load_label"))
             }
         }
     }
