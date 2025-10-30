@@ -13,10 +13,7 @@ struct RickAndMortyMVPApp: App {
     var body: some Scene {
         WindowGroup {
             CharactersListView(
-                characterRepository: CharacterRepository(
-                    rmClient: RMClient(),
-                    cacheService: CacheService()
-                )
+                characterRepository: DependencyContainer.shared.characterRepository
             )
         }
     }

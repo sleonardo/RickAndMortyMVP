@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import RickMortySwiftApi
 
 class DependencyContainer {
     static let shared = DependencyContainer()
@@ -15,11 +14,11 @@ class DependencyContainer {
     
     // MARK: - Services
     lazy var cacheService: CacheServiceProtocol = CacheService()
-    lazy var rmClient: RMClient = RMClient()
+    lazy var apiClient: APIClientProtocol = APIClient()
     
     // MARK: - Repository
     lazy var characterRepository: CharacterRepositoryProtocol = CharacterRepository(
-        rmClient: rmClient,
+        apiClient: apiClient,
         cacheService: cacheService
     )
     

@@ -9,11 +9,11 @@ import Foundation
 import RickMortySwiftApi
 
 class CharacterRepository: CharacterRepositoryProtocol {
-    private let rmClient: RMClient
+    private let apiClient: APIClientProtocol
     private let cacheService: CacheServiceProtocol
     
-    init(rmClient: RMClient = RMClient(), cacheService: CacheServiceProtocol) {
-        self.rmClient = rmClient
+    init(apiClient: APIClientProtocol = APIClient(), cacheService: CacheServiceProtocol) {
+        self.apiClient = apiClient
         self.cacheService = cacheService
     }
     
@@ -25,14 +25,16 @@ class CharacterRepository: CharacterRepositoryProtocol {
             return cachedCharacters
         }
         
-        // Fetch from network
+        // Fetch from network using our APIClient
         print("🌐 Loading characters from network")
-        let characters = try await rmClient.character().getAllCharacters()
-        print("📥 Received \(characters.count) characters from network")
-        // Cache the results
-        await cacheService.setCharacters(characters)
+        let endpoint = CharacterEndpoint.getCharacters(page: 1, filters: nil)
+        let response: APIResponse<RMCharacterModel> = try await apiClient.request(endpoint)
         
-        return characters
+        print("📥 Received \(response.results.count) characters from network")
+        // Cache the results
+        await cacheService.setCharacters(response.results)
+        
+        return response.results
     }
     
     func getCharacters(page: Int) async throws -> [RMCharacterModel] {
@@ -44,14 +46,16 @@ class CharacterRepository: CharacterRepositoryProtocol {
             return cached
         }
         
-        // Fetch from network
+        // Fetch from network using our APIClient
         print("🌐 Loading page \(page) from network")
-        let characters = try await rmClient.character().getCharactersByPageNumber(pageNumber: page)
-        print("📥 Received page \(page): \(characters.count) characters")
-        // Cache the results (shorter expiry for paginated data)
-        await cacheService.set(characters, forKey: cacheKey, expiry: .hours(2))
+        let endpoint = CharacterEndpoint.getCharacters(page: page, filters: nil)
+        let response: APIResponse<RMCharacterModel> = try await apiClient.request(endpoint)
         
-        return characters
+        print("📥 Received page \(page): \(response.results.count) characters")
+        // Cache the results
+        await cacheService.set(response.results, forKey: cacheKey, expiry: .hours(2))
+        
+        return response.results
     }
     
     func getCharacter(id: Int) async throws -> RMCharacterModel {
@@ -61,9 +65,10 @@ class CharacterRepository: CharacterRepositoryProtocol {
             return cachedCharacter
         }
         
-        // Fetch from network
+        // Fetch from network using our APIClient
         print("🌐 Loading character \(id) from network")
-        let character = try await rmClient.character().getCharacterByID(id: id)
+        let endpoint = CharacterEndpoint.getCharacter(id: id)
+        let character: RMCharacterModel = try await apiClient.request(endpoint)
         
         // Cache the result
         await cacheService.setCharacter(character)
@@ -72,16 +77,27 @@ class CharacterRepository: CharacterRepositoryProtocol {
     }
     
     func searchCharacters(name: String, status: Status?, gender: Gender?) async throws -> [RMCharacterModel] {
-        // For search, we'll use cached all characters if available for better performance
-        let allCharacters = try await getAllCharacters()
+        // Build filters for API call
+        var filters: [String: String] = [:]
         
-        return allCharacters.filter { character in
-            let matchesName = name.isEmpty || character.name.localizedCaseInsensitiveContains(name)
-            let matchesStatus = status == nil || character.status.lowercased() == status?.rawValue.lowercased()
-            let matchesGender = gender == nil || character.gender.lowercased() == gender?.rawValue.lowercased()
-            
-            return matchesName && matchesStatus && matchesGender
+        if !name.isEmpty {
+            filters["name"] = name
         }
+        
+        if let status = status {
+            filters["status"] = status.rawValue.lowercased()
+        }
+        
+        if let gender = gender {
+            filters["gender"] = gender.rawValue.lowercased()
+        }
+        
+        // Use API search with our APIClient
+        let endpoint = CharacterEndpoint.getCharacters(page: 1, filters: filters.isEmpty ? nil : filters)
+        let response: APIResponse<RMCharacterModel> = try await apiClient.request(endpoint)
+        
+        print("🔍 Search found \(response.results.count) characters")
+        return response.results
     }
     
     // MARK: - Cache Management
