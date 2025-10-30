@@ -1214,12 +1214,12 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tipo"
+            "value" : "Type"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Tipo"
           }
         }
