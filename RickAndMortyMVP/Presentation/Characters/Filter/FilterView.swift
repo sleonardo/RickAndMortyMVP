@@ -30,9 +30,9 @@ struct FiltersView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Status")) {
-                    Picker("Select Status", selection: selectedStatus) {
-                        Text("All").tag(Optional<Status>.none)
+                Section(header: Text(String(localized:"status_title"))) {
+                    Picker(String(localized:"select_status_text"), selection: selectedStatus) {
+                        Text(String(localized:"all_text")).tag(Optional<Status>.none)
                         ForEach(Status.filterCasesStatus, id: \.self) { status in
                             Text(status.rawValue.capitalized).tag(Optional(status))
                         }
@@ -40,9 +40,9 @@ struct FiltersView: View {
                     .pickerStyle(.segmented)
                 }
                 
-                Section(header: Text("Gender")) {
-                    Picker("Select Gender", selection: selectedGender) {
-                        Text("All").tag(Optional<Gender>.none)
+                Section(header: Text(String(localized:"gender_title"))) {
+                    Picker(String(localized:"select_gender_text"), selection: selectedGender) {
+                        Text(String(localized:"all_text")).tag(Optional<Gender>.none)
                         ForEach(Gender.filterCasesGender, id: \.self) { gender in
                             Text(gender.rawValue.capitalized).tag(Optional(gender))
                         }
@@ -51,10 +51,10 @@ struct FiltersView: View {
                 }
                 
                 if selectedStatus.wrappedValue != nil || selectedGender.wrappedValue != nil {
-                    Section(header: Text("Current Selection")) {
+                    Section(header: Text(String(localized:"current_selection_text"))) {
                         if let status = selectedStatus.wrappedValue {
                             HStack {
-                                Text("Status:")
+                                Text(String(localized:"status_text"))
                                     .foregroundColor(.secondary)
                                 Spacer()
                                 Text(status.rawValue.capitalized)
@@ -65,7 +65,7 @@ struct FiltersView: View {
                         
                         if let gender = selectedGender.wrappedValue {
                             HStack {
-                                Text("Gender:")
+                                Text(String(localized:"gender_text"))
                                     .foregroundColor(.secondary)
                                 Spacer()
                                 Text(gender.rawValue.capitalized)
@@ -77,7 +77,7 @@ struct FiltersView: View {
                 }
                 
                 Section {
-                    Button("Apply Filters") {
+                    Button(String(localized:"apply_filters_button")) {
                         print("🎯 Applying filters from FiltersView - Status: \(selectedStatus.wrappedValue?.rawValue ?? "None"), Gender: \(selectedGender.wrappedValue?.rawValue ?? "None")")
                         dismiss()
                     }
@@ -88,7 +88,7 @@ struct FiltersView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     
                     if selectedStatus.wrappedValue != nil || selectedGender.wrappedValue != nil {
-                        Button("Reset Filters") {
+                        Button(String(localized:"reset_filters_button")) {
                             print("🔄 Resetting filters from FiltersView")
                             selectedStatus.wrappedValue = nil
                             selectedGender.wrappedValue = nil
@@ -98,18 +98,18 @@ struct FiltersView: View {
                     }
                 }
             }
-            .navigationTitle("Filters")
+            .navigationTitle(String(localized:"filter_navigation_title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
+                    Button(String(localized:"cancel_button")) {
                         print("❌ Canceling filters selection")
                         dismiss()
                     }
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Apply") {
+                    Button(String(localized:"apply_button")) {
                         print("🎯 Applying filters from toolbar - Status: \(selectedStatus.wrappedValue?.rawValue ?? "None"), Gender: \(selectedGender.wrappedValue?.rawValue ?? "None")")
                         dismiss()
                     }

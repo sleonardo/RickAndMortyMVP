@@ -29,7 +29,7 @@ struct CharactersListView: View {
         NavigationStack {
             contentView
                 .rickAndMortyGradient()
-                .navigationTitle("Rick & Morty")
+                .navigationTitle("characters_list_navigation_title")
                 .toolbar { toolbarContent }
                 .sheet(isPresented: $showingCacheInfo) {
                     CacheInfoView(viewModel: viewModel)
@@ -80,13 +80,13 @@ struct CharactersListView: View {
             if viewModel.filters.hasActiveFilters {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text("Active Filters:")
+                        Text(String(localized:"active_filters_text"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                         
                         Spacer()
                         
-                        Button("Clear All") {
+                        Button(String(localized:"clear_all_button")) {
                             print("🗑️ Clearing all filters")
                             viewModel.applyFilters(status: nil, gender: nil)
                         }
@@ -98,7 +98,7 @@ struct CharactersListView: View {
                         HStack(spacing: 8) {
                             if let status = viewModel.filters.status {
                                 FilterChip(
-                                    text: "Status: \(status.rawValue)",
+                                    text: String(localized: "status_text \(status.rawValue)"),
                                     onRemove: {
                                         print("🗑️ Removing status filter")
                                         viewModel.applyFilters(status: nil, gender: viewModel.filters.gender)
@@ -108,7 +108,7 @@ struct CharactersListView: View {
                             
                             if let gender = viewModel.filters.gender {
                                 FilterChip(
-                                    text: "Gender: \(gender.rawValue)",
+                                    text: String(localized: "gender_text \(gender.rawValue)"),
                                     onRemove: {
                                         print("🗑️ Removing gender filter")
                                         viewModel.applyFilters(status: viewModel.filters.status, gender: nil)
@@ -129,7 +129,7 @@ struct CharactersListView: View {
     }
     
     private var loadingView: some View {
-        ProgressView("Loading characters...")
+        ProgressView("loading_characters_label")
             .foregroundStyle(.white)
     }
     
@@ -167,10 +167,10 @@ struct CharactersListView: View {
             if viewModel.characters.isEmpty {
                 EmptyStateView(
                     title: viewModel.isSearching && !searchText.isEmpty ?
-                        "No Results" : "No Characters",
+                    String(localized:"no_results_title") : String(localized:"no_characters_title"),
                     message: viewModel.isSearching && !searchText.isEmpty ?
-                        "No characters found for \"\(searchText)\"" :
-                        "Unable to load characters. Please check your connection and try again.",
+                        String(localized: "no_characters_found_for_message \(searchText)") :
+                        String(localized:"check_your_connection_message"),
                     systemImage: viewModel.isSearching ? "person.slash" : "wifi.exclamationmark",
                     action: {
                         Task {
@@ -179,8 +179,8 @@ struct CharactersListView: View {
                     }
                 )
                 .accessibilityElement(children: .combine)
-                .accessibilityLabel("No characters available")
-                .accessibilityHint("Pull to refresh or check your internet connection")
+                .accessibilityLabel(String(localized:"no_characters_available_label"))
+                .accessibilityHint(String(localized:"pull_to_refresh_or_check_connection_label"))
             } else {
                 LazyVStack(spacing: 12) {
                     ForEach(Array(viewModel.characters.enumerated()), id: \.element.uniqueID) { index, character in
@@ -188,9 +188,9 @@ struct CharactersListView: View {
                     }
                 }
                 .accessibilityElement(children: .contain)
-                .accessibilityLabel("Characters list")
-                .accessibilityValue("\(viewModel.characters.count) characters")
-                .accessibilityHint("Swipe up or down to browse characters")
+                .accessibilityLabel(String(localized:"characters_list_label"))
+                .accessibilityValue(String(localized: "\(viewModel.characters.count) characters"))
+                .accessibilityHint(String(localized:"swipe_up_or_down_to_browse_characters_label"))
             }
         }
     }

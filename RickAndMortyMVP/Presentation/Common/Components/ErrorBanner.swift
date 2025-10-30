@@ -63,7 +63,7 @@ struct ErrorBanner: View {
                     }
                     
                     if let onRetry = onRetry {
-                        Button("Retry") {
+                        Button("retry_button") {
                             onRetry()
                         }
                         .buttonStyle(.borderedProminent)
@@ -116,11 +116,11 @@ extension ErrorBanner {
         
         var title: String {
             switch self {
-            case .general: return String(localized: "Something went wrong", comment: "General error title")
-            case .network: return String(localized: "Connection issue", comment: "Network error title")
-            case .server: return String(localized: "Server error", comment: "Server error title")
-            case .warning: return String(localized: "Warning", comment: "Warning title")
-            case .info: return String(localized: "Information", comment: "Info title")
+            case .general: return String(localized: "general_banner_error", comment: "General error title")
+            case .network: return String(localized: "network_banner_error", comment: "Network error title")
+            case .server: return String(localized: "server_banner_error", comment: "Server error title")
+            case .warning: return String(localized: "warning_banner_error", comment: "Warning title")
+            case .info: return String(localized: "information_banner_error", comment: "Info title")
             }
         }
         

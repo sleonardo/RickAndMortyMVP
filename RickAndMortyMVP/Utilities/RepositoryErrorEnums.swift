@@ -17,13 +17,25 @@ enum RepositoryError: Error, LocalizedError {
     var errorDescription: String? {
         switch self {
         case .notFound:
-            return "The requested resource was not found."
+            return String(
+                localized: "not_found_error_message",
+                comment: "The requested resource was not found."
+            )
         case .networkError:
-            return "Network connection error. Please check your internet."
+            return String(
+                localized: "network_error_message",
+                comment: "Network connection error. Please check your internet."
+            )
         case .invalidData:
-            return "The data received is invalid."
+            return String(
+                localized: "invalid_data_error_message",
+                comment: "The data received is invalid."
+            )
         case .cacheError:
-            return "Error accessing cached data."
+            return String(
+                localized: "cache_error_message",
+                comment: "Error accessing cached data."
+            )
         }
     }
 }
