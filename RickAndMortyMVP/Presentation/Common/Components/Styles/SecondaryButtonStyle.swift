@@ -11,7 +11,6 @@ import SwiftUI
 struct SecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .frame(maxWidth: .infinity)
             .foregroundColor(.red)
             .padding()
             .background(

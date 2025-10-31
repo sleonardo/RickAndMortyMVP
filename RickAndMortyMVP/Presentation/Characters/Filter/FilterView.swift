@@ -27,6 +27,10 @@ struct FiltersView: View {
         )
     }
     
+    private var hasSelectedFilters: Bool {
+        selectedStatus.wrappedValue != nil || selectedGender.wrappedValue != nil
+    }
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -53,7 +57,7 @@ struct FiltersView: View {
                         .pickerStyle(.segmented)
                     }
                     
-                    if selectedStatus.wrappedValue != nil || selectedGender.wrappedValue != nil {
+                    if hasSelectedFilters {
                         Section(header: Text(String(localized:"current_selection_text"))) {
                             if let status = selectedStatus.wrappedValue {
                                 HStack {
@@ -80,28 +84,7 @@ struct FiltersView: View {
                     }
                     
                     Section {
-                        Button(String(localized:"apply_filters_button")) {
-                            print("🎯 Applying filters from FiltersView - Status: \(selectedStatus.wrappedValue?.rawValue ?? "None"), Gender: \(selectedGender.wrappedValue?.rawValue ?? "None")")
-                            
-                            let impactMed = UIImpactFeedbackGenerator(style: .medium)
-                            impactMed.impactOccurred()
-                            
-                            dismiss()
-                        }
-                        .buttonStyle(PrimaryButtonStyle())
-                        
-                        if selectedStatus.wrappedValue != nil || selectedGender.wrappedValue != nil {
-                            Button(String(localized:"reset_filters_button")) {
-                                print("🔄 Resetting filters from FiltersView")
-                                
-                                let impactLight = UIImpactFeedbackGenerator(style: .light)
-                                impactLight.impactOccurred()
-                                
-                                selectedStatus.wrappedValue = nil
-                                selectedGender.wrappedValue = nil
-                            }
-                            .buttonStyle(SecondaryButtonStyle())
-                        }
+                        actionsSection.padding(.bottom, 20)
                     }
                     .listRowBackground(Color.clear)
                 }
@@ -139,5 +122,22 @@ struct FiltersView: View {
                 print("📱 FiltersView disappeared")
             }
         }
+    }
+    
+    private var actionsSection: some View {
+        ActionsView(
+            hasSelectedFilters: hasSelectedFilters,
+            onApply: {
+                print("🎯 Applying filters from FiltersView - Status: \(selectedStatus.wrappedValue?.rawValue ?? "None"), Gender: \(selectedGender.wrappedValue?.rawValue ?? "None")")
+                dismiss()
+            },
+            onReset: {
+                print("🔄 Resetting filters from FiltersView")
+                selectedStatus.wrappedValue = nil
+                selectedGender.wrappedValue = nil
+            }
+        )
+        .listRowInsets(EdgeInsets())
+        .background(Color.clear)
     }
 }
