@@ -27,76 +27,53 @@ struct FiltersView: View {
         )
     }
     
+    private var hasSelectedFilters: Bool {
+        selectedStatus.wrappedValue != nil || selectedGender.wrappedValue != nil
+    }
+    
     var body: some View {
         NavigationView {
-            Form {
-                Section(header: Text(String(localized:"status_title"))) {
-                    Picker(String(localized:"select_status_text"), selection: selectedStatus) {
-                        Text(String(localized:"all_text")).tag(Optional<Status>.none)
-                        ForEach(Status.filterCasesStatus, id: \.self) { status in
-                            Text(status.rawValue.capitalized).tag(Optional(status))
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                }
+            ZStack {
+                Color.clear.rickAndMortyGradient()
                 
-                Section(header: Text(String(localized:"gender_title"))) {
-                    Picker(String(localized:"select_gender_text"), selection: selectedGender) {
-                        Text(String(localized:"all_text")).tag(Optional<Gender>.none)
-                        ForEach(Gender.filterCasesGender, id: \.self) { gender in
-                            Text(gender.rawValue.capitalized).tag(Optional(gender))
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                }
-                
-                if selectedStatus.wrappedValue != nil || selectedGender.wrappedValue != nil {
-                    Section(header: Text(String(localized:"current_selection_text"))) {
-                        if let status = selectedStatus.wrappedValue {
-                            HStack {
-                                Text(String(localized:"status_text"))
-                                    .foregroundColor(.secondary)
-                                Spacer()
-                                Text(status.rawValue.capitalized)
-                                    .foregroundColor(.blue)
-                                    .fontWeight(.semibold)
-                            }
-                        }
-                        
-                        if let gender = selectedGender.wrappedValue {
-                            HStack {
-                                Text(String(localized:"gender_text"))
-                                    .foregroundColor(.secondary)
-                                Spacer()
-                                Text(gender.rawValue.capitalized)
-                                    .foregroundColor(.blue)
-                                    .fontWeight(.semibold)
-                            }
-                        }
-                    }
-                }
-                
-                Section {
-                    Button(String(localized:"apply_filters_button")) {
-                        print("🎯 Applying filters from FiltersView - Status: \(selectedStatus.wrappedValue?.rawValue ?? "None"), Gender: \(selectedGender.wrappedValue?.rawValue ?? "None")")
-                        dismiss()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.blue)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                Form {
+                    statusPicker
                     
-                    if selectedStatus.wrappedValue != nil || selectedGender.wrappedValue != nil {
-                        Button(String(localized:"reset_filters_button")) {
-                            print("🔄 Resetting filters from FiltersView")
-                            selectedStatus.wrappedValue = nil
-                            selectedGender.wrappedValue = nil
+                    genderPicker
+                    
+                    if hasSelectedFilters {
+                        Section(header: Text(String(localized:"current_selection_text"))) {
+                            if let status = selectedStatus.wrappedValue {
+                                HStack {
+                                    Text(String(localized:"status_text"))
+                                        .foregroundColor(.secondary)
+                                    Spacer()
+                                    Text(status.rawValue.capitalized)
+                                        .foregroundColor(.blue)
+                                        .fontWeight(.semibold)
+                                }
+                            }
+                            
+                            if let gender = selectedGender.wrappedValue {
+                                HStack {
+                                    Text(String(localized:"gender_text"))
+                                        .foregroundColor(.secondary)
+                                    Spacer()
+                                    Text(gender.rawValue.capitalized)
+                                        .foregroundColor(.blue)
+                                        .fontWeight(.semibold)
+                                }
+                            }
                         }
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(.red)
                     }
+                    
+                    Section {
+                        actionsSection.padding(.bottom, 20)
+                    }
+                    .listRowBackground(Color.clear)
                 }
+                .scrollContentBackground(.hidden)
+                .background(Color.clear)
             }
             .navigationTitle(String(localized:"filter_navigation_title"))
             .navigationBarTitleDisplayMode(.inline)
@@ -106,14 +83,20 @@ struct FiltersView: View {
                         print("❌ Canceling filters selection")
                         dismiss()
                     }
+                    .foregroundColor(.red)
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(String(localized:"apply_button")) {
                         print("🎯 Applying filters from toolbar - Status: \(selectedStatus.wrappedValue?.rawValue ?? "None"), Gender: \(selectedGender.wrappedValue?.rawValue ?? "None")")
+                        
+                        let impactMed = UIImpactFeedbackGenerator(style: .medium)
+                        impactMed.impactOccurred()
+                        
                         dismiss()
                     }
                     .fontWeight(.semibold)
+                    .foregroundColor(.blue)
                 }
             }
             .onAppear {
@@ -123,5 +106,38 @@ struct FiltersView: View {
                 print("📱 FiltersView disappeared")
             }
         }
+    }
+    
+    private var actionsSection: some View {
+        ActionsView(
+            hasSelectedFilters: hasSelectedFilters,
+            onApply: {
+                print("🎯 Applying filters from FiltersView - Status: \(selectedStatus.wrappedValue?.rawValue ?? "None"), Gender: \(selectedGender.wrappedValue?.rawValue ?? "None")")
+                dismiss()
+            },
+            onReset: {
+                print("🔄 Resetting filters from FiltersView")
+                selectedStatus.wrappedValue = nil
+                selectedGender.wrappedValue = nil
+            }
+        )
+        .listRowInsets(EdgeInsets())
+        .background(Color.clear)
+    }
+    
+    private var statusPicker: some View {
+        FilterPickerSection(
+            title: String(localized: "select_status_text"),
+            items: Status.filterCasesStatus,
+            selectedItem: selectedStatus
+        )
+    }
+    
+    private var genderPicker: some View {
+        FilterPickerSection(
+            title: String(localized: "select_gender_text"),
+            items: Gender.filterCasesGender,
+            selectedItem: selectedGender
+        )
     }
 }

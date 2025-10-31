@@ -1,22 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "... and %lld more" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "... and %lld more"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "... y %lld más"
-          }
-        }
-      }
-    },
     "%@ • %@" : {
       "localizations" : {
         "en" : {
@@ -38,22 +22,6 @@
         }
       },
       "shouldTranslate" : false
-    },
-    "%lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld"
-          }
-        }
-      }
     },
     "%lld characters" : {
       "localizations" : {
@@ -173,6 +141,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Información de caché"
+          }
+        }
+      }
+    },
+    "cache_is_currently_empty_text" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The cache is currently empty"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La caché está vacía actualmente.\n"
           }
         }
       }
@@ -576,22 +560,6 @@
         }
       }
     },
-    "gender_title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gender:"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Género:"
-          }
-        }
-      }
-    },
     "general_banner_error" : {
       "comment" : "General error title",
       "localizations" : {
@@ -751,6 +719,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Y %lld episodios más..."
+          }
+        }
+      }
+    },
+    "more_items_text%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+ %lld more items"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+ %lld artículos más"
           }
         }
       }
@@ -1161,22 +1145,6 @@
         }
       }
     },
-    "status_title" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Status:"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estatus:"
-          }
-        }
-      }
-    },
     "swipe_up_or_down_to_browse_characters_label" : {
       "localizations" : {
         "en" : {
@@ -1219,7 +1187,7 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Tipo"
           }
         }
