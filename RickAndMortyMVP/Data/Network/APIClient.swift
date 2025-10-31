@@ -11,16 +11,34 @@ public final class APIClient: APIClientProtocol {
     private let baseURL: String
     private let urlSession: URLSession
     private let jsonDecoder: JSONDecoder
+    private let isLoggingEnabled: Bool
     
-    public init(
-        baseURL: String = "https://rickandmortyapi.com/api",
-        urlSession: URLSession = .shared,
-        jsonDecoder: JSONDecoder = JSONDecoder()
+    // Inicializador interno
+    private init(
+        baseURL: String,
+        urlSession: URLSession,
+        jsonDecoder: JSONDecoder,
+        isLoggingEnabled: Bool
     ) {
         self.baseURL = baseURL
         self.urlSession = urlSession
         self.jsonDecoder = jsonDecoder
+        self.isLoggingEnabled = isLoggingEnabled
         self.jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
+    }
+    
+    public static func create(
+        baseURL: String? = nil,
+        urlSession: URLSession = .shared,
+        jsonDecoder: JSONDecoder = JSONDecoder(),
+        isLoggingEnabled: Bool? = nil
+    ) -> APIClient {
+        return APIClient(
+            baseURL: baseURL ?? AppEnvironment.apiBaseURL,
+            urlSession: urlSession,
+            jsonDecoder: jsonDecoder,
+            isLoggingEnabled: isLoggingEnabled ?? AppEnvironment.isLoggingEnabled
+        )
     }
     
     public func request<T: Decodable>(_ endpoint: APIEndpoint) async throws -> T {

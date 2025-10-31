@@ -1,0 +1,17 @@
+//
+//  Debug.xcconfig
+//  RickAndMortyMVP
+//
+//  Created by Leonardo Simoza on 31/10/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+// Configuraciones específicas para Debug
+#include "Project.xcconfig"
+
+CONFIGURATION = Debug
+API_BASE_URL = https:/$()/rickandmortyapi.com/api
+API_KEY = dev_key_123456
+ENABLE_LOGGING = YES

@@ -14,7 +14,7 @@ class DependencyContainer {
     
     // MARK: - Services
     lazy var cacheService: CacheServiceProtocol = CacheService()
-    lazy var apiClient: APIClientProtocol = APIClient()
+    lazy var apiClient: APIClientProtocol = APIClient.create()
     
     // MARK: - Repository
     lazy var characterRepository: CharacterRepositoryProtocol = CharacterRepository(

@@ -1,0 +1,14 @@
+//
+//  Project.xcconfig
+//  RickAndMortyMVP
+//
+//  Created by Leonardo Simoza on 31/10/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+// Configuraciones base del proyecto
+APP_NAME = MiApp
+BUNDLE_ID_PREFIX = com.miempresa
+DEPLOYMENT_TARGET = 16.0

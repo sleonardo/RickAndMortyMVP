@@ -33,9 +33,22 @@
 		12D8544C2E9EB91D00DD6545 /* RickAndMortyMVPUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RickAndMortyMVPUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		120565532EB4A0BA0046E1CE /* Exceptions for "RickAndMortyMVP" folder in "RickAndMortyMVP" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 12D854342E9EB91A00DD6545 /* RickAndMortyMVP */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		12D854372E9EB91A00DD6545 /* RickAndMortyMVP */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				120565532EB4A0BA0046E1CE /* Exceptions for "RickAndMortyMVP" folder in "RickAndMortyMVP" target */,
+			);
 			path = RickAndMortyMVP;
 			sourceTree = "<group>";
 		};
@@ -281,6 +294,8 @@
 /* Begin XCBuildConfiguration section */
 		12D854542E9EB91D00DD6545 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 12D854372E9EB91A00DD6545 /* RickAndMortyMVP */;
+			baseConfigurationReferenceRelativePath = Environments/Debug.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -346,6 +361,8 @@
 		};
 		12D854552E9EB91D00DD6545 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 12D854372E9EB91A00DD6545 /* RickAndMortyMVP */;
+			baseConfigurationReferenceRelativePath = Environments/Release.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -412,6 +429,7 @@
 				DEVELOPMENT_TEAM = BHS955B27U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RickAndMortyMVP/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -440,6 +458,7 @@
 				DEVELOPMENT_TEAM = BHS955B27U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RickAndMortyMVP/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

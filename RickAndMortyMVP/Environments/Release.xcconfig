@@ -1,0 +1,17 @@
+//
+//  Release.xcconfig
+//  RickAndMortyMVP
+//
+//  Created by Leonardo Simoza on 31/10/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+// Configuraciones específicas para Release
+#include "Project.xcconfig"
+
+CONFIGURATION = Release
+API_BASE_URL = https:/$()/prod.com/api
+API_KEY = prod_key_789012
+ENABLE_LOGGING = NO

@@ -12,7 +12,7 @@ class CharacterRepository: CharacterRepositoryProtocol {
     private let apiClient: APIClientProtocol
     private let cacheService: CacheServiceProtocol
     
-    init(apiClient: APIClientProtocol = APIClient(), cacheService: CacheServiceProtocol) {
+    init(apiClient: APIClientProtocol = APIClient.create(), cacheService: CacheServiceProtocol) {
         self.apiClient = apiClient
         self.cacheService = cacheService
     }
