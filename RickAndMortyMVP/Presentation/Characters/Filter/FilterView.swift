@@ -31,6 +31,7 @@ struct FiltersView: View {
         NavigationView {
             ZStack {
                 Color.clear.rickAndMortyGradient()
+                
                 Form {
                     Section(header: Text(String(localized:"status_title"))) {
                         Picker(String(localized:"select_status_text"), selection: selectedStatus) {
@@ -81,24 +82,28 @@ struct FiltersView: View {
                     Section {
                         Button(String(localized:"apply_filters_button")) {
                             print("🎯 Applying filters from FiltersView - Status: \(selectedStatus.wrappedValue?.rawValue ?? "None"), Gender: \(selectedGender.wrappedValue?.rawValue ?? "None")")
+                            
+                            let impactMed = UIImpactFeedbackGenerator(style: .medium)
+                            impactMed.impactOccurred()
+                            
                             dismiss()
                         }
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.blue)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .buttonStyle(PrimaryButtonStyle())
                         
                         if selectedStatus.wrappedValue != nil || selectedGender.wrappedValue != nil {
                             Button(String(localized:"reset_filters_button")) {
                                 print("🔄 Resetting filters from FiltersView")
+                                
+                                let impactLight = UIImpactFeedbackGenerator(style: .light)
+                                impactLight.impactOccurred()
+                                
                                 selectedStatus.wrappedValue = nil
                                 selectedGender.wrappedValue = nil
                             }
-                            .frame(maxWidth: .infinity)
-                            .foregroundColor(.red)
+                            .buttonStyle(SecondaryButtonStyle())
                         }
                     }
+                    .listRowBackground(Color.clear)
                 }
                 .scrollContentBackground(.hidden)
                 .background(Color.clear)
@@ -111,14 +116,20 @@ struct FiltersView: View {
                         print("❌ Canceling filters selection")
                         dismiss()
                     }
+                    .foregroundColor(.red)
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(String(localized:"apply_button")) {
                         print("🎯 Applying filters from toolbar - Status: \(selectedStatus.wrappedValue?.rawValue ?? "None"), Gender: \(selectedGender.wrappedValue?.rawValue ?? "None")")
+                        
+                        let impactMed = UIImpactFeedbackGenerator(style: .medium)
+                        impactMed.impactOccurred()
+                        
                         dismiss()
                     }
                     .fontWeight(.semibold)
+                    .foregroundColor(.blue)
                 }
             }
             .onAppear {
