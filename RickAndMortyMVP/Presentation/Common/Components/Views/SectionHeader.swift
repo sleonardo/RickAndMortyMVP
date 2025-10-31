@@ -13,17 +13,25 @@ struct SectionHeader: View {
     let icon: String
     
     var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: icon)
-                .foregroundColor(.blue)
-                .font(.system(size: 18, weight: .medium))
-            
-            Text(title)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .foregroundColor(.primary)
+        HStack {
+            HStack(spacing: 10) {
+                Image(systemName: icon)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.blue)
+                    .frame(width: 24)
+                
+                Text(title)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.primary)
+            }
             
             Spacer()
+            
+            Circle()
+                .fill(Color.blue)
+                .frame(width: 6, height: 6)
+                .opacity(0.8)
         }
+        .padding(.bottom, 4)
     }
 }

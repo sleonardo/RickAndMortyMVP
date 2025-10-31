@@ -37,25 +37,9 @@ struct FiltersView: View {
                 Color.clear.rickAndMortyGradient()
                 
                 Form {
-                    Section(header: Text(String(localized:"status_title"))) {
-                        Picker(String(localized:"select_status_text"), selection: selectedStatus) {
-                            Text(String(localized:"all_text")).tag(Optional<Status>.none)
-                            ForEach(Status.filterCasesStatus, id: \.self) { status in
-                                Text(status.rawValue.capitalized).tag(Optional(status))
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                    }
+                    statusPicker
                     
-                    Section(header: Text(String(localized:"gender_title"))) {
-                        Picker(String(localized:"select_gender_text"), selection: selectedGender) {
-                            Text(String(localized:"all_text")).tag(Optional<Gender>.none)
-                            ForEach(Gender.filterCasesGender, id: \.self) { gender in
-                                Text(gender.rawValue.capitalized).tag(Optional(gender))
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                    }
+                    genderPicker
                     
                     if hasSelectedFilters {
                         Section(header: Text(String(localized:"current_selection_text"))) {
@@ -139,5 +123,21 @@ struct FiltersView: View {
         )
         .listRowInsets(EdgeInsets())
         .background(Color.clear)
+    }
+    
+    private var statusPicker: some View {
+        FilterPickerSection(
+            title: String(localized: "status_title"),
+            items: Status.filterCasesStatus,
+            selectedItem: selectedStatus
+        )
+    }
+    
+    private var genderPicker: some View {
+        FilterPickerSection(
+            title: String(localized: "gender_title"),
+            items: Gender.filterCasesGender,
+            selectedItem: selectedGender
+        )
     }
 }
