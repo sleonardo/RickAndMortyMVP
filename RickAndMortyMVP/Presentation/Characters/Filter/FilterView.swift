@@ -127,7 +127,7 @@ struct FiltersView: View {
     
     private var statusPicker: some View {
         FilterPickerSection(
-            title: String(localized: "status_title"),
+            title: String(localized: "select_status_text"),
             items: Status.filterCasesStatus,
             selectedItem: selectedStatus
         )
@@ -135,7 +135,7 @@ struct FiltersView: View {
     
     private var genderPicker: some View {
         FilterPickerSection(
-            title: String(localized: "gender_title"),
+            title: String(localized: "select_gender_text"),
             items: Gender.filterCasesGender,
             selectedItem: selectedGender
         )
